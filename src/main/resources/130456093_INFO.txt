@@ -1,0 +1,56 @@
+Name: Apostolos Zarras
+AFM: 130456093
+Status: Married Filing Jointly
+Income: 22570
+Receipts:
+
+Receipt ID: 1
+Date: 25/2/2014
+Kind: Basic
+Amount: 2000
+Company: Hand Made Clothes
+Country: Greece
+City: Ioannina
+Street: Kaloudi 
+Number: 10
+
+Receipt ID: 2
+Date: 28/2/2014
+Kind: Entertainment
+Amount: 500
+Company: Floca Cafe
+Country: Greece
+City: Ioannina
+Street: Kavafi
+Number: 4
+
+Receipt ID: 3
+Date: 10/3/2014
+Kind: Health
+Amount: 500
+Company: Dentist
+Country: Greece
+City: Ioannina
+Street: Lamprou
+Number: 20
+
+
+Receipt ID: 4
+Date: 3/5/2014
+Kind: Other
+Amount: 900
+Company: Public
+Country: Greece
+City: Ioannina
+Street: Vlahlidou
+Number: 20
+
+Receipt ID: 5
+Date: 3/5/2014
+Kind: Other
+Amount: 600
+Company: Toys Store
+Country: Greece
+City: Ioannina
+Street: Omhrou
+Number: 5
