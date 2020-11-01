@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 import com.minesota.tax.calculator.model.Database;
 import com.minesota.tax.calculator.model.Receipt;
-import com.minesota.tax.calculator.model.ReceiptFactory;
 import com.minesota.tax.calculator.model.TaxPayer;
 
 public class InputSystem {
@@ -52,14 +51,13 @@ public class InputSystem {
 			String receiptCity = getParameterValueFromTxtFileLine(inputStream.nextLine(), "City: ");
 			String receiptStreet = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Street: ");
 			String receiptNumber = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Number: ");
-			Receipt newReceipt = ReceiptFactory.createNewReceipt(receiptKind, receiptID, receiptDate, receiptAmount, receiptCompany, receiptCountry, receiptCity, receiptStreet, receiptNumber);
+			Receipt newReceipt = new Receipt(receiptKind, receiptID, receiptDate, receiptAmount, receiptCompany, receiptCountry, receiptCity, receiptStreet, receiptNumber);
 
 			newTaxpayer.addReceiptToList(newReceipt);
 		}
 
 		Database.addTaxpayerToList(newTaxpayer);
 	}
-
 
 	private static String getParameterValueFromTxtFileLine(String fileLine, String parameterName) {
 		return fileLine.substring(parameterName.length());
@@ -96,7 +94,7 @@ public class InputSystem {
 			String receiptCity = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<City> ", " </City>");
 			String receiptStreet = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Street> ", " </Street>");
 			String receiptNumber = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Number> ", " </Number>");
-			Receipt newReceipt = ReceiptFactory.createNewReceipt(receiptKind, receiptID, receiptDate, receiptAmount, receiptCompany, receiptCountry, receiptCity, receiptStreet, receiptNumber);
+			Receipt newReceipt = new Receipt(receiptKind, receiptID, receiptDate, receiptAmount, receiptCompany, receiptCountry, receiptCity, receiptStreet, receiptNumber);
 
 			newTaxpayer.addReceiptToList(newReceipt);
 		}
