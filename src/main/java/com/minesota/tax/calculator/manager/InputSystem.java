@@ -60,6 +60,7 @@ public class InputSystem {
 		Database.addTaxpayerToList(newTaxpayer);
 	}
 
+
 	private static String getParameterValueFromTxtFileLine(String fileLine, String parameterName) {
 		return fileLine.substring(parameterName.length());
 	}
