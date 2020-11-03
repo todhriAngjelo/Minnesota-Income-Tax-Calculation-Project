@@ -171,6 +171,7 @@ public class InsertNewReceiptJDialog extends JDialog {
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                Database database = Database.getInstance();
                 if (!kindComboBox.getSelectedItem().toString().equals("Select Kind") && !receiptIdTextField.getText().equals("") && !dateTextField.getText().equals("")
                         && !amountTextField.getText().equals("") && !companyTextField.getText().equals("") && !countryTextField.getText().equals("")
                         && !cityTextField.getText().equals("") && !streetTextField.getText().equals("") && !numberTextField.getText().equals("")) {
@@ -178,9 +179,9 @@ public class InsertNewReceiptJDialog extends JDialog {
                     Receipt newReceipt = new Receipt(kindComboBox.getSelectedItem().toString(), receiptIdTextField.getText(),
                             dateTextField.getText(), amountTextField.getText(), companyTextField.getText(),
                             countryTextField.getText(), cityTextField.getText(), streetTextField.getText(), numberTextField.getText());
-                    Database.getTaxpayerFromArrayList(taxpayerID).addReceiptToList(newReceipt);
+                    database.getTaxpayerFromArrayList(taxpayerID).addReceiptToList(newReceipt);
 
-                    Database.updateTaxpayerInputFile(taxpayerID);
+                    database.updateTaxpayerInputFile(taxpayerID);
 
                     dispose();
                 } else {

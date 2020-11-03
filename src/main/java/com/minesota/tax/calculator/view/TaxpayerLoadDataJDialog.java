@@ -14,7 +14,6 @@ import com.minesota.tax.calculator.model.Database;
 public class TaxpayerLoadDataJDialog extends JDialog {
 
 	private final JList<String> taxpayersAfmInfoFilesJList;
-
 	private String afmInfoFilesFolderPath;
 
 	public TaxpayerLoadDataJDialog(JFrame appMainWindow) {
@@ -63,6 +62,7 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 		loadDataFromSelectedAfmInfoFilesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				List<String> afmInfoFilesListToLoad = taxpayersAfmInfoFilesJList.getSelectedValuesList();
+				Database database = Database.getInstance();
 
 				if (afmInfoFilesListToLoad.size() > 0) {
 					String confirmDialogText = "Φόρτωση δεδομένων φορολογούμενων απο τα ακόλουθα αρχεία:\n";
@@ -73,9 +73,9 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 
 					int dialogResult = JOptionPane.showConfirmDialog(null, confirmDialogText, "Επιβεβαίωση", JOptionPane.YES_NO_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION) {
-						Database.proccessTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, afmInfoFilesListToLoad);
+						database.proccessTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, afmInfoFilesListToLoad);
 						JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
-						totalLoadedTaxpayersJLabel.setText(Integer.toString(Database.getTaxpayersArrayListSize()));
+						totalLoadedTaxpayersJLabel.setText(Integer.toString(database.getTaxpayersArrayListSize()));
 
 						dispose();
 					}

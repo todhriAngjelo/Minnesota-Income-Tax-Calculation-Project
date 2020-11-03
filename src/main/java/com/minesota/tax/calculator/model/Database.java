@@ -9,67 +9,79 @@ import com.minesota.tax.calculator.manager.InputSystem;
 import com.minesota.tax.calculator.manager.OutputSystem;
 
 public class Database {
-	private static String taxpayersInfoFilesPath;
-	private static final ArrayList<TaxPayer> taxpayersArrayList = new ArrayList<>();
 
-	public static String getTaxpayersInfoFilesPath() {
-		return Database.taxpayersInfoFilesPath;
-	}
+    private String taxpayersInfoFilesPath;
+    private final ArrayList<TaxPayer> taxpayersArrayList = new ArrayList<>();
+    private static Database databaseInstance = null;
 
-	public static void setTaxpayersInfoFilesPath(String taxpayersInfoFilesPath) {
-		Database.taxpayersInfoFilesPath = taxpayersInfoFilesPath;
-	}
+    public static Database getInstance() {
+        if (databaseInstance == null) {
+            databaseInstance = new Database();
+        }
 
-	public static void proccessTaxpayersDataFromFilesIntoDatabase(String afmInfoFilesFolderPath, List<String> taxpayersAfmInfoFiles) {
-		InputSystem.addTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, taxpayersAfmInfoFiles);
-	}
+        return databaseInstance;
+    }
 
-	public static void addTaxpayerToList(TaxPayer taxpayer) {
-		taxpayersArrayList.add(taxpayer);
-	}
+    public String getTaxpayersInfoFilesPath() {
+        return taxpayersInfoFilesPath;
+    }
 
-	public static int getTaxpayersArrayListSize() {
-		return taxpayersArrayList.size();
-	}
+    public void setTaxpayersInfoFilesPath(String taxpayersInfoFilesPath) {
+        this.taxpayersInfoFilesPath = taxpayersInfoFilesPath;
+    }
 
-	public static TaxPayer getTaxpayerFromArrayList(int index) {
-		return taxpayersArrayList.get(index);
-	}
+    public void proccessTaxpayersDataFromFilesIntoDatabase(String afmInfoFilesFolderPath, List<String> taxpayersAfmInfoFiles) {
+        InputSystem inputSystem = InputSystem.getInstance();
+        inputSystem.addTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, taxpayersAfmInfoFiles);
+    }
 
-	public static void removeTaxpayerFromArrayList(int index) {
-		taxpayersArrayList.remove(index);
-	}
+    public void addTaxpayerToList(TaxPayer taxpayer) {
+        taxpayersArrayList.add(taxpayer);
+    }
 
-	public static String getTaxpayerNameAfmValuesPairList(int index) {
-		TaxPayer taxpayer = taxpayersArrayList.get(index);
-		return taxpayer.getName() + " | " + taxpayer.getAFM();
-	}
+    public int getTaxpayersArrayListSize() {
+        return taxpayersArrayList.size();
+    }
 
-	public static String[] getTaxpayersNameAfmValuesPairList() {
-		String[] taxpayersNameAfmValuesPairList = new String[taxpayersArrayList.size()];
+    public TaxPayer getTaxpayerFromArrayList(int index) {
+        return taxpayersArrayList.get(index);
+    }
 
-		int c = 0;
-		for (TaxPayer taxpayer : taxpayersArrayList) {
-			taxpayersNameAfmValuesPairList[c++] = taxpayer.getName() + " | " + taxpayer.getAFM();
-		}
+    public void removeTaxpayerFromArrayList(int index) {
+        taxpayersArrayList.remove(index);
+    }
 
-		return taxpayersNameAfmValuesPairList;
-	}
+    public String getTaxpayerNameAfmValuesPairList(int index) {
+        TaxPayer taxpayer = taxpayersArrayList.get(index);
+        return taxpayer.getName() + " | " + taxpayer.getAFM();
+    }
 
-	public static void updateTaxpayerInputFile(int index) {
-		File taxpayersInfoFilesPathFileObject = new File(taxpayersInfoFilesPath);
-		FilenameFilter fileNameFilter = (dir, name) -> (name.toLowerCase().endsWith("_info.txt") || name.toLowerCase().endsWith("_info.xml"));
+    public String[] getTaxpayersNameAfmValuesPairList() {
+        String[] taxpayersNameAfmValuesPairList = new String[taxpayersArrayList.size()];
 
-		for (File file : taxpayersInfoFilesPathFileObject.listFiles(fileNameFilter)) {
-			if (!file.getName().contains(taxpayersArrayList.get(index).getAFM())) continue;
+        int c = 0;
+        for (TaxPayer taxpayer : taxpayersArrayList) {
+            taxpayersNameAfmValuesPairList[c++] = taxpayer.getName() + " | " + taxpayer.getAFM();
+        }
 
-			if (file.getName().toLowerCase().endsWith(".txt")) {
-				OutputSystem.saveUpdatedTaxpayerTxtInputFile(file.getAbsolutePath(), index);
-			}
-			if (file.getName().toLowerCase().endsWith(".xml")) {
-				OutputSystem.saveUpdatedTaxpayerXmlInputFile(file.getAbsolutePath(), index);
-			}
-			break;
-		}
-	}
+        return taxpayersNameAfmValuesPairList;
+    }
+
+    public void updateTaxpayerInputFile(int index) {
+        File taxpayersInfoFilesPathFileObject = new File(taxpayersInfoFilesPath);
+        FilenameFilter fileNameFilter = (dir, name) -> (name.toLowerCase().endsWith("_info.txt") || name.toLowerCase().endsWith("_info.xml"));
+        OutputSystem outputSystem = OutputSystem.getInstance();
+
+        for (File file : taxpayersInfoFilesPathFileObject.listFiles(fileNameFilter)) {
+            if (!file.getName().contains(taxpayersArrayList.get(index).getAFM())) continue;
+
+            if (file.getName().toLowerCase().endsWith(".txt")) {
+                outputSystem.saveUpdatedTaxpayerTxtInputFile(file.getAbsolutePath(), index);
+            }
+            if (file.getName().toLowerCase().endsWith(".xml")) {
+                outputSystem.saveUpdatedTaxpayerXmlInputFile(file.getAbsolutePath(), index);
+            }
+            break;
+        }
+    }
 }

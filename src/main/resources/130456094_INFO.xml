@@ -1,14 +1,14 @@
 <Name> Nikos Zisis </Name>
 <AFM> 130456094 </AFM>
 <Status> Single </Status>
-<Income> 40000 </Income>
+<Income> 40000.0 </Income>
 
 <Receipts>
 
 <ReceiptID> 1 </ReceiptID>
 <Date> 25/2/2014 </Date>
 <Kind> Other </Kind>
-<Amount> 2000 </Amount>
+<Amount> 2000.0 </Amount>
 <Company> Omega Watches </Company>
 <Country> Greece </Country>
 <City> Ioannina </City>
@@ -18,7 +18,7 @@
 <ReceiptID> 2 </ReceiptID>
 <Date> 10/5/2014 </Date>
 <Kind> Entertainment </Kind>
-<Amount> 2000 </Amount>
+<Amount> 2000.0 </Amount>
 <Company> Hotel Du Lac </Company>
 <Country> Greece </Country>
 <City> Ioannina </City>
@@ -28,11 +28,21 @@
 <ReceiptID> 3 </ReceiptID>
 <Date> 5/6/2014 </Date>
 <Kind> Basic </Kind>
-<Amount> 4000 </Amount>
+<Amount> 4000.0 </Amount>
 <Company> IKEA </Company>
 <Country> Greece </Country>
 <City> Ioannina </City>
 <Street> Averof </Street>
 <Number> 100 </Number>
+
+<ReceiptID> 4 </ReceiptID>
+<Date> 3/11/2020 </Date>
+<Kind> Health </Kind>
+<Amount> 150.0 </Amount>
+<Company> Xatzikosta </Company>
+<Country> Greece </Country>
+<City> Ioannina </City>
+<Street> Kardamitsia </Street>
+<Number> 2 </Number>
 
 </Receipts>
