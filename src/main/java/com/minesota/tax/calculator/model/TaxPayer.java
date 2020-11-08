@@ -237,9 +237,9 @@ public class TaxPayer {
 		return (new BigDecimal(basicTax).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
 	}
 
-	public double getTaxInxrease() {
-		return (new BigDecimal(taxIncrease).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-	}
+    public double getTaxIncrease() {
+        return (new BigDecimal(taxIncrease).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+    }
 
 	public double getTaxDecrease() {
 		return (new BigDecimal(taxDecrease).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());

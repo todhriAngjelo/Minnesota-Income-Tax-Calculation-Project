@@ -34,13 +34,13 @@ public class MainJFrameWindow {
     private void initialize() {
         taxationMainWindowJFrame = new JFrame();
         taxationMainWindowJFrame.setResizable(false);
-        taxationMainWindowJFrame.setTitle("Διαχείρηση φορολογίας");
+        taxationMainWindowJFrame.setTitle("Tax Manager");
         taxationMainWindowJFrame.setBounds(-1, -1, 357, 228);
         taxationMainWindowJFrame.setLocationRelativeTo(null);
         taxationMainWindowJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         taxationMainWindowJFrame.getContentPane().setLayout(null);
 
-        JLabel label = new JLabel("Συν. αριθμός φορολογούμενων:");
+        JLabel label = new JLabel("Total number of taxpayers:");
         label.setForeground(Color.BLUE);
         label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 13));
         label.setBounds(30, 11, 218, 33);
@@ -57,12 +57,12 @@ public class MainJFrameWindow {
         separator.setBounds(29, 42, 293, 2);
         taxationMainWindowJFrame.getContentPane().add(separator);
 
-        JButton openTaxpayerLoadDataJDialog = new JButton("Φόρτωση δεδομένων φορολογούμενου (-ων)");
+        JButton openTaxpayerLoadDataJDialog = new JButton("Load taxpayers data");
         openTaxpayerLoadDataJDialog.setFont(new Font("Tahoma", Font.BOLD, 11));
         openTaxpayerLoadDataJDialog.setBounds(27, 55, 295, 53);
         taxationMainWindowJFrame.getContentPane().add(openTaxpayerLoadDataJDialog);
 
-        JButton showLoadedTaxpayersDataButton = new JButton("Εμφάνιση λίστας φορολογουμένων");
+        JButton showLoadedTaxpayersDataButton = new JButton("Display taxpayers list");
         showLoadedTaxpayersDataButton.setEnabled(false);
         showLoadedTaxpayersDataButton.setFont(new Font("Tahoma", Font.BOLD, 11));
         showLoadedTaxpayersDataButton.setBounds(27, 121, 295, 53);
@@ -78,13 +78,13 @@ public class MainJFrameWindow {
             public void actionPerformed(ActionEvent arg0) {
                 JFileChooser afmInfoFilesFolderChooser = new JFileChooser();
                 afmInfoFilesFolderChooser.setCurrentDirectory(new java.io.File("."));
-                afmInfoFilesFolderChooser.setDialogTitle("Επιλέξτε τον φάκελο που περιέχει τα <AFM>_INFO.* αρχεία");
+                afmInfoFilesFolderChooser.setDialogTitle("Select the folder that contains <AFM>_INFO.* files");
                 afmInfoFilesFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 Database database = Database.getInstance();
 
                 if (afmInfoFilesFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String afmInfoFilesFolderPath = afmInfoFilesFolderChooser.getSelectedFile().toString();
-                    JOptionPane.showMessageDialog(null, afmInfoFilesFolderPath, "Διαδρομή φακέλου αρχείων εισόδου", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, afmInfoFilesFolderPath, "Path of input files", JOptionPane.INFORMATION_MESSAGE);
 
                     database.setTaxpayersInfoFilesPath(afmInfoFilesFolderPath);
 

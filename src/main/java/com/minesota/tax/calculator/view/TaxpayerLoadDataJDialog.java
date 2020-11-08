@@ -25,7 +25,7 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 		setBounds(100, 100, 486, 332);
 		getContentPane().setLayout(null);
 		setLocationRelativeTo(null);
-		setTitle("Αρχεία φόρτωσης δεδομένων");
+		setTitle("Data files of taxpayers");
 
 		JScrollPane scrollPaneForList = new JScrollPane();
 		scrollPaneForList.setBounds(10, 11, 250, 258);
@@ -40,15 +40,15 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 		JButton loadDataFromSelectedAfmInfoFilesButton = new JButton();
 		loadDataFromSelectedAfmInfoFilesButton.setBounds(270, 11, 198, 68);
 		String text = "<html>"
-				+ "Φόρτωση δεδομένων"
+				+ "Load selected"
 				+ "<br>"
-				+ "επιλεγμένων αρχείων"
+				+ "files data"
 				+ "</html>";
 		loadDataFromSelectedAfmInfoFilesButton.setText(text);
 		loadDataFromSelectedAfmInfoFilesButton.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(loadDataFromSelectedAfmInfoFilesButton);
 
-		JButton selectAllButton = new JButton("Επιλογή όλων");
+		JButton selectAllButton = new JButton("Select all");
 		selectAllButton.setBounds(10, 274, 250, 23);
 		selectAllButton.setFont(new Font("Tahoma", Font.BOLD, 11));
 		getContentPane().add(selectAllButton);
@@ -65,13 +65,13 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 				Database database = Database.getInstance();
 
 				if (afmInfoFilesListToLoad.size() > 0) {
-					String confirmDialogText = "Φόρτωση δεδομένων φορολογούμενων απο τα ακόλουθα αρχεία:\n";
+					String confirmDialogText = "Load taxpayers data from the following files:\n";
 					for (String afmInfoFileName : afmInfoFilesListToLoad) {
 						confirmDialogText += afmInfoFileName + "\n";
 					}
-					confirmDialogText += "Είστε σίγουρος?";
+					confirmDialogText += "Are you sure?";
 
-					int dialogResult = JOptionPane.showConfirmDialog(null, confirmDialogText, "Επιβεβαίωση", JOptionPane.YES_NO_OPTION);
+					int dialogResult = JOptionPane.showConfirmDialog(null, confirmDialogText, "Confirmation", JOptionPane.YES_NO_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						database.proccessTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, afmInfoFilesListToLoad);
 						JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
@@ -80,7 +80,7 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 						dispose();
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Δεν έχεις επιλέξει αρχείο(α) απο την λίστα.", "Σφάλμα", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "No file selected", "Error", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
