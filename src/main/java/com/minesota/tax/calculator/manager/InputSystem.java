@@ -11,6 +11,19 @@ import com.minesota.tax.calculator.model.TaxPayer;
 
 public class InputSystem {
 
+    private final String[][] txtFileTags = {
+            {"Name: ", ""}, {"AFM: ", ""}, {"Status: ", ""}, {"Income: ", ""},                                          //Taxpayer info
+            {"Receipts:", ""},                                                                                          //Receipts begin tag
+            {"Receipt ID: ", ""}, {"Date: ", ""}, {"Kind: ", ""}, {"Amount: ", ""},                                     //Receipt info
+            {"Company: ", ""}, {"Country: ", ""}, {"City: ", ""}, {"Street: ", ""}, {"Number: ", ""}                    //Receipt info
+    };
+    private final String[][] xmlFileTags = {
+            {"<Name> ", " </Name>"}, {"<AFM> ", " </AFM>"}, {"<Status> ", " </Status>"}, {"<Income> ", " </Income>"},   //Taxpayer info
+            {"<Receipts>", "</Receipts>"},                                                                              //Receipts begin/end tag
+            {"<ReceiptID> ", " </ReceiptID>"}, {"<Date> ", " </Date>"}, {"<Kind> ", " </Kind>"},                        //Receipt info
+            {"<Amount> ", " </Amount>"}, {"<Company> ", " </Company>"}, {"<Country> ", " </Country>"},                  //Receipt info
+            {"<City> ", " </City>"}, {"<Street> ", " </Street>"}, {"<Number> ", " </Number>"}                           //Receipt info
+    };
     private static InputSystem inputSystemInstance = null;
 
     public static InputSystem getInstance() {
@@ -23,44 +36,38 @@ public class InputSystem {
 
     public void addTaxpayersDataFromFilesIntoDatabase(String afmInfoFilesFolderPath, List<String> taxpayersAfmInfoFiles) {
         for (String afmInfoFile : taxpayersAfmInfoFiles) {
+            Scanner inputStream = openFile(afmInfoFilesFolderPath, afmInfoFile);
             if (afmInfoFile.endsWith(".txt")) {
-                loadTaxpayerDataFromTxtFileIntoDatabase(afmInfoFilesFolderPath, afmInfoFile);
+                loadTaxpayerDataFromFileIntoDatabase(inputStream, txtFileTags);
             } else if (afmInfoFile.endsWith(".xml")) {
-                loadTaxpayersDataFromXmlFileIntoDatabase(afmInfoFilesFolderPath, afmInfoFile);
+                loadTaxpayerDataFromFileIntoDatabase(inputStream, xmlFileTags);
             }
         }
     }
 
-    private void loadTaxpayerDataFromTxtFileIntoDatabase(String afmInfoFileFolderPath, String afmInfoFile) {
-        Scanner inputStream = null;
-        try {
-            inputStream = new Scanner(new FileInputStream(afmInfoFileFolderPath + "\\" + afmInfoFile));
-        } catch (FileNotFoundException e) {
-            System.out.println("Problem opening " + afmInfoFile + " file.");
-            System.exit(0);
-        }
-
-        String taxpayerName = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Name: ");
-        String taxpayerAFM = getParameterValueFromTxtFileLine(inputStream.nextLine(), "AFM: ");
-        String taxpayerStatus = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Status: ");
-        String taxpayerIncome = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Income: ");
+    private void loadTaxpayerDataFromFileIntoDatabase(Scanner inputStream, String[][] tagArray) {
+        String taxpayerName = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[0][0], tagArray[0][1]);
+        String taxpayerAFM = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[1][0], tagArray[1][1]);
+        String taxpayerStatus = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[2][0], tagArray[2][1]);
+        String taxpayerIncome = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[3][0], tagArray[3][1]);
         TaxPayer newTaxpayer = new TaxPayer(taxpayerName, taxpayerAFM, taxpayerStatus, taxpayerIncome);
 
         String fileLine;
         while (inputStream.hasNextLine()) {
             fileLine = inputStream.nextLine();
             if (fileLine.equals("")) continue;
-            if (fileLine.indexOf("Receipts:") != -1) continue;
+            if (fileLine.contains(tagArray[4][0])) continue;
+            if (fileLine.contains("</Receipts>")) break;
 
-            String receiptID = getParameterValueFromTxtFileLine(fileLine, "Receipt ID: ");
-            String receiptDate = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Date: ");
-            String receiptKind = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Kind: ");
-            String receiptAmount = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Amount: ");
-            String receiptCompany = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Company: ");
-            String receiptCountry = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Country: ");
-            String receiptCity = getParameterValueFromTxtFileLine(inputStream.nextLine(), "City: ");
-            String receiptStreet = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Street: ");
-            String receiptNumber = getParameterValueFromTxtFileLine(inputStream.nextLine(), "Number: ");
+            String receiptID = getParameterValueFromFileLine(fileLine, tagArray[5][0], tagArray[5][1]);
+            String receiptDate = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[6][0], tagArray[6][1]);
+            String receiptKind = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[7][0], tagArray[7][1]);
+            String receiptAmount = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[8][0], tagArray[8][1]);
+            String receiptCompany = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[9][0], tagArray[9][1]);
+            String receiptCountry = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[10][0], tagArray[10][1]);
+            String receiptCity = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[11][0], tagArray[11][1]);
+            String receiptStreet = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[12][0], tagArray[12][1]);
+            String receiptNumber = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[13][0], tagArray[13][1]);
             Receipt newReceipt = new Receipt(receiptKind, receiptID, receiptDate, receiptAmount, receiptCompany, receiptCountry, receiptCity, receiptStreet, receiptNumber);
 
             newTaxpayer.addReceiptToList(newReceipt);
@@ -70,51 +77,17 @@ public class InputSystem {
         database.addTaxpayerToList(newTaxpayer);
     }
 
-    private String getParameterValueFromTxtFileLine(String fileLine, String parameterName) {
-        return fileLine.substring(parameterName.length());
-    }
-
-    private void loadTaxpayersDataFromXmlFileIntoDatabase(String afmInfoFileFolderPath, String afmInfoFile) {
-        Scanner inputStream = null;
+    private Scanner openFile(String afmInfoFileFolderPath, String afmInfoFile) {
         try {
-            inputStream = new Scanner(new FileInputStream(afmInfoFileFolderPath + "\\" + afmInfoFile));
+            return new Scanner(new FileInputStream(afmInfoFileFolderPath + "\\" + afmInfoFile));
         } catch (FileNotFoundException e) {
             System.out.println("Problem opening " + afmInfoFile + " file.");
             System.exit(0);
         }
-
-        String taxpayerName = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Name> ", " </Name>");
-        String taxpayerAFM = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<AFM> ", " </AFM>");
-        String taxpayerStatus = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Status> ", " </Status>");
-        String taxpayerIncome = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Income> ", " </Income>");
-        TaxPayer newTaxpayer = new TaxPayer(taxpayerName, taxpayerAFM, taxpayerStatus, taxpayerIncome);
-
-        String fileLine;
-        while (inputStream.hasNextLine()) {
-            fileLine = inputStream.nextLine();
-            if (fileLine.equals("")) continue;
-            if (fileLine.indexOf("<Receipts>") != -1) continue;
-            if (fileLine.indexOf("</Receipts>") != -1) break;
-
-            String receiptID = getParameterValueFromXmlFileLine(fileLine, "<ReceiptID> ", " </ReceiptID>");
-            String receiptDate = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Date> ", " </Date>");
-            String receiptKind = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Kind> ", " </Kind>");
-            String receiptAmount = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Amount> ", " </Amount>");
-            String receiptCompany = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Company> ", " </Company>");
-            String receiptCountry = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Country> ", " </Country>");
-            String receiptCity = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<City> ", " </City>");
-            String receiptStreet = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Street> ", " </Street>");
-            String receiptNumber = getParameterValueFromXmlFileLine(inputStream.nextLine(), "<Number> ", " </Number>");
-            Receipt newReceipt = new Receipt(receiptKind, receiptID, receiptDate, receiptAmount, receiptCompany, receiptCountry, receiptCity, receiptStreet, receiptNumber);
-
-            newTaxpayer.addReceiptToList(newReceipt);
-        }
-
-        Database database = Database.getInstance();
-        database.addTaxpayerToList(newTaxpayer);
+        return null;
     }
 
-    private String getParameterValueFromXmlFileLine(String fileLine, String parameterStartField, String parameterEndField) {
+    private String getParameterValueFromFileLine(String fileLine, String parameterStartField, String parameterEndField) {
         return fileLine.substring(parameterStartField.length(), fileLine.length() - parameterEndField.length());
     }
 }

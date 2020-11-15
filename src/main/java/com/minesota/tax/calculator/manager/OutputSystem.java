@@ -161,7 +161,7 @@ public class OutputSystem {
 
         outputStream.close();
 
-        JOptionPane.showMessageDialog(null, "Η αποθήκευση ολοκληρώθηκε", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void saveTaxpayerInfoToXmlLogFile(String folderSavePath, int taxpayerIndex) {
@@ -194,7 +194,7 @@ public class OutputSystem {
 
         outputStream.close();
 
-        JOptionPane.showMessageDialog(null, "Η αποθήκευση ολοκληρώθηκε", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void createTaxpayerReceiptsPieJFreeChart(int taxpayerIndex) {
