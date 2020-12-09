@@ -1,17 +1,17 @@
 package com.minesota.tax.calculator.model;
 
+import com.minesota.tax.calculator.manager.InputSystem;
+import com.minesota.tax.calculator.manager.OutputSystem;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.minesota.tax.calculator.manager.InputSystem;
-import com.minesota.tax.calculator.manager.OutputSystem;
-
 public class Database {
 
     private String taxpayersInfoFilesPath;
-    private final ArrayList<TaxPayer> taxpayersArrayList = new ArrayList<>();
+    private final List<TaxPayer> taxPayers = new ArrayList<>();
     private static Database databaseInstance = null;
 
     public static Database getInstance() {
@@ -20,10 +20,6 @@ public class Database {
         }
 
         return databaseInstance;
-    }
-
-    public String getTaxpayersInfoFilesPath() {
-        return taxpayersInfoFilesPath;
     }
 
     public void setTaxpayersInfoFilesPath(String taxpayersInfoFilesPath) {
@@ -36,31 +32,31 @@ public class Database {
     }
 
     public void addTaxpayerToList(TaxPayer taxpayer) {
-        taxpayersArrayList.add(taxpayer);
+        taxPayers.add(taxpayer);
     }
 
     public int getTaxpayersArrayListSize() {
-        return taxpayersArrayList.size();
+        return taxPayers.size();
     }
 
-    public TaxPayer getTaxpayerFromArrayList(int index) {
-        return taxpayersArrayList.get(index);
+    public TaxPayer getTaxPayerFromIndex(int index) {
+        return taxPayers.get(index);
     }
 
     public void removeTaxpayerFromArrayList(int index) {
-        taxpayersArrayList.remove(index);
+        taxPayers.remove(index);
     }
 
     public String getTaxpayerNameAfmValuesPairList(int index) {
-        TaxPayer taxpayer = taxpayersArrayList.get(index);
+        TaxPayer taxpayer = taxPayers.get(index);
         return taxpayer.getName() + " | " + taxpayer.getAFM();
     }
 
     public String[] getTaxpayersNameAfmValuesPairList() {
-        String[] taxpayersNameAfmValuesPairList = new String[taxpayersArrayList.size()];
+        String[] taxpayersNameAfmValuesPairList = new String[taxPayers.size()];
 
         int c = 0;
-        for (TaxPayer taxpayer : taxpayersArrayList) {
+        for (TaxPayer taxpayer : taxPayers) {
             taxpayersNameAfmValuesPairList[c++] = taxpayer.getName() + " | " + taxpayer.getAFM();
         }
 
@@ -73,7 +69,7 @@ public class Database {
         OutputSystem outputSystem = OutputSystem.getInstance();
 
         for (File file : taxpayersInfoFilesPathFileObject.listFiles(fileNameFilter)) {
-            if (!file.getName().contains(taxpayersArrayList.get(index).getAFM())) continue;
+            if (!file.getName().contains(taxPayers.get(index).getAFM())) continue;
 
             if (file.getName().toLowerCase().endsWith(".txt")) {
                 outputSystem.saveUpdatedTaxpayerTxtInputFile(file.getAbsolutePath(), index);

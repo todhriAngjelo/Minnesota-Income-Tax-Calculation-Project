@@ -1,12 +1,11 @@
 package com.minesota.tax.calculator.view;
 
+import com.minesota.tax.calculator.model.Database;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.*;
-
-import com.minesota.tax.calculator.model.Database;
 
 public class TaxpayerReceiptsManagementJDialog extends JDialog {
 
@@ -74,7 +73,7 @@ public class TaxpayerReceiptsManagementJDialog extends JDialog {
                 Database database = Database.getInstance();
 
                 if (taxpayerReceiptsJList.getSelectedIndex() != -1) {
-                    JOptionPane.showMessageDialog(null, database.getTaxpayerFromArrayList(taxpayerID).getReceipt(taxpayerReceiptsJList.getSelectedIndex()).toString(), taxpayerReceiptsJList.getSelectedValue().toString(), JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, database.getTaxPayerFromIndex(taxpayerID).getReceipt(taxpayerReceiptsJList.getSelectedIndex()).toString(), taxpayerReceiptsJList.getSelectedValue().toString(), JOptionPane.PLAIN_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "No receipts selected", "Error", JOptionPane.WARNING_MESSAGE);
                 }
@@ -97,7 +96,7 @@ public class TaxpayerReceiptsManagementJDialog extends JDialog {
                 if (taxpayerReceiptsJList.getSelectedIndex() != -1) {
                     int dialogResult = JOptionPane.showConfirmDialog(null, "Delete selected receipt(" + taxpayerReceiptsJList.getSelectedValue().toString() + ") ?", "Are you sure?", JOptionPane.YES_NO_OPTION);
                     if (dialogResult == JOptionPane.YES_OPTION) {
-                        database.getTaxpayerFromArrayList(taxpayerID).removeReceiptFromList(taxpayerReceiptsJList.getSelectedIndex());
+                        database.getTaxPayerFromIndex(taxpayerID).removeReceiptFromList(taxpayerReceiptsJList.getSelectedIndex());
 
                         database.updateTaxpayerInputFile(taxpayerID);
 
@@ -112,7 +111,7 @@ public class TaxpayerReceiptsManagementJDialog extends JDialog {
 
     public void fillTaxpayerReceiptsJList() {
         Database database = Database.getInstance();
-        String[] jlistValues = database.getTaxpayerFromArrayList(taxpayerID).getReceiptsList();
+        String[] jlistValues = database.getTaxPayerFromIndex(taxpayerID).getReceiptsList();
 
         taxpayerReceiptsJList.setModel(new AbstractListModel() {
             final String[] values = jlistValues;

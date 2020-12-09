@@ -1,15 +1,13 @@
 package com.minesota.tax.calculator.view;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.List;
+import com.minesota.tax.calculator.model.Database;
 
 import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.util.List;
 
-import com.minesota.tax.calculator.model.Database;
+import static com.minesota.tax.calculator.app.ApplicationConstants.TAHOMA;
 
 public class TaxpayerLoadDataJDialog extends JDialog {
 
@@ -33,7 +31,7 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 
 		taxpayersAfmInfoFilesJList = new JList<>();
 		taxpayersAfmInfoFilesJList.setForeground(Color.BLUE);
-		taxpayersAfmInfoFilesJList.setFont(new Font("Tahoma", Font.BOLD, 11));
+		taxpayersAfmInfoFilesJList.setFont(new Font(TAHOMA, Font.BOLD, 11));
 		scrollPaneForList.setViewportView(taxpayersAfmInfoFilesJList);
 		taxpayersAfmInfoFilesJList.setVisibleRowCount(100);
 
@@ -53,35 +51,29 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 		selectAllButton.setFont(new Font("Tahoma", Font.BOLD, 11));
 		getContentPane().add(selectAllButton);
 
-		selectAllButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				taxpayersAfmInfoFilesJList.setSelectionInterval(0, taxpayersAfmInfoFilesJList.getModel().getSize() - 1);
-			}
-		});
+		selectAllButton.addActionListener(e -> taxpayersAfmInfoFilesJList.setSelectionInterval(0, taxpayersAfmInfoFilesJList.getModel().getSize() - 1));
 
-		loadDataFromSelectedAfmInfoFilesButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				List<String> afmInfoFilesListToLoad = taxpayersAfmInfoFilesJList.getSelectedValuesList();
-				Database database = Database.getInstance();
+		loadDataFromSelectedAfmInfoFilesButton.addActionListener(e -> {
+			List<String> afmInfoFilesListToLoad = taxpayersAfmInfoFilesJList.getSelectedValuesList();
+			Database database = Database.getInstance();
 
-				if (afmInfoFilesListToLoad.size() > 0) {
-					String confirmDialogText = "Load taxpayers data from the following files:\n";
-					for (String afmInfoFileName : afmInfoFilesListToLoad) {
-						confirmDialogText += afmInfoFileName + "\n";
-					}
-					confirmDialogText += "Are you sure?";
-
-					int dialogResult = JOptionPane.showConfirmDialog(null, confirmDialogText, "Confirmation", JOptionPane.YES_NO_OPTION);
-					if (dialogResult == JOptionPane.YES_OPTION) {
-						database.proccessTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, afmInfoFilesListToLoad);
-						JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
-						totalLoadedTaxpayersJLabel.setText(Integer.toString(database.getTaxpayersArrayListSize()));
-
-						dispose();
-					}
-				} else {
-					JOptionPane.showMessageDialog(null, "No file selected", "Error", JOptionPane.WARNING_MESSAGE);
+			if (afmInfoFilesListToLoad.size() > 0) {
+				String confirmDialogText = "Load taxpayers data from the following files:\n";
+				for (String afmInfoFileName : afmInfoFilesListToLoad) {
+					confirmDialogText += afmInfoFileName + "\n";
 				}
+				confirmDialogText += "Are you sure?";
+
+				int dialogResult = JOptionPane.showConfirmDialog(null, confirmDialogText, "Confirmation", JOptionPane.YES_NO_OPTION);
+				if (dialogResult == JOptionPane.YES_OPTION) {
+					database.proccessTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, afmInfoFilesListToLoad);
+					JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
+					totalLoadedTaxpayersJLabel.setText(Integer.toString(database.getTaxpayersArrayListSize()));
+
+					dispose();
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "No file selected", "Error", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 	}
@@ -90,11 +82,7 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 		this.afmInfoFilesFolderPath = afmInfoFilesFolderPath;
 
 		File folder = new File(afmInfoFilesFolderPath);
-		File[] folderFiles = folder.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return (name.toLowerCase().endsWith("_info.txt") || name.toLowerCase().endsWith("_info.xml"));
-			}
-		});
+		File[] folderFiles = folder.listFiles((dir, name) -> (name.toLowerCase().endsWith("_info.txt") || name.toLowerCase().endsWith("_info.xml")));
 
 		String[] jlistValues = new String[folderFiles.length];
 		int jlistValuesItems = 0;

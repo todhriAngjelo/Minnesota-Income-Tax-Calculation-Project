@@ -1,15 +1,14 @@
 package com.minesota.tax.calculator.view;
 
+import com.minesota.tax.calculator.model.Database;
+import com.minesota.tax.calculator.model.Receipt;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
-import javax.swing.*;
-
-import com.minesota.tax.calculator.model.Database;
-import com.minesota.tax.calculator.model.Receipt;
 
 public class InsertNewReceiptJDialog extends JDialog {
 
@@ -169,24 +168,22 @@ public class InsertNewReceiptJDialog extends JDialog {
         kindComboBox.setBounds(119, 115, 165, 25);
         getContentPane().add(kindComboBox);
 
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Database database = Database.getInstance();
-                if (!kindComboBox.getSelectedItem().toString().equals("Select Kind") && !receiptIdTextField.getText().equals("") && !dateTextField.getText().equals("")
-                        && !amountTextField.getText().equals("") && !companyTextField.getText().equals("") && !countryTextField.getText().equals("")
-                        && !cityTextField.getText().equals("") && !streetTextField.getText().equals("") && !numberTextField.getText().equals("")) {
+        okButton.addActionListener(e -> {
+            Database database = Database.getInstance();
+            if (!kindComboBox.getSelectedItem().toString().equals("Select Kind") && !receiptIdTextField.getText().equals("") && !dateTextField.getText().equals("")
+                    && !amountTextField.getText().equals("") && !companyTextField.getText().equals("") && !countryTextField.getText().equals("")
+                    && !cityTextField.getText().equals("") && !streetTextField.getText().equals("") && !numberTextField.getText().equals("")) {
 
-                    Receipt newReceipt = new Receipt(kindComboBox.getSelectedItem().toString(), receiptIdTextField.getText(),
-                            dateTextField.getText(), amountTextField.getText(), companyTextField.getText(),
-                            countryTextField.getText(), cityTextField.getText(), streetTextField.getText(), numberTextField.getText());
-                    database.getTaxpayerFromArrayList(taxpayerID).addReceiptToList(newReceipt);
+                Receipt newReceipt = new Receipt(kindComboBox.getSelectedItem().toString(), receiptIdTextField.getText(),
+                        dateTextField.getText(), amountTextField.getText(), companyTextField.getText(),
+                        countryTextField.getText(), cityTextField.getText(), streetTextField.getText(), numberTextField.getText());
+                database.getTaxPayerFromIndex(taxpayerID).addReceiptToList(newReceipt);
 
-                    database.updateTaxpayerInputFile(taxpayerID);
+                database.updateTaxpayerInputFile(taxpayerID);
 
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Empty fields detected", "Error", JOptionPane.WARNING_MESSAGE);
-                }
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Empty fields detected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 

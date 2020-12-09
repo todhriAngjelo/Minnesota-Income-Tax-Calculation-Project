@@ -1,16 +1,15 @@
 package com.minesota.tax.calculator.view;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.*;
-
 import com.minesota.tax.calculator.model.Database;
 
+import javax.swing.*;
+import java.awt.*;
+
+import static com.minesota.tax.calculator.app.ApplicationConstants.TAHOMA;
+
 public class MainJFrameWindow {
+
+    private final Database database = Database.getInstance();
 
     private JFrame taxationMainWindowJFrame;
 
@@ -19,14 +18,12 @@ public class MainJFrameWindow {
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    MainJFrameWindow window = new MainJFrameWindow();
-                    window.taxationMainWindowJFrame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                MainJFrameWindow window = new MainJFrameWindow();
+                window.taxationMainWindowJFrame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -42,14 +39,14 @@ public class MainJFrameWindow {
 
         JLabel label = new JLabel("Total number of taxpayers:");
         label.setForeground(Color.BLUE);
-        label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 13));
+        label.setFont(new Font(TAHOMA, Font.BOLD | Font.ITALIC, 13));
         label.setBounds(30, 11, 218, 33);
         taxationMainWindowJFrame.getContentPane().add(label);
 
         JLabel totalLoadedTaxpayersJLabel = new JLabel("0");
         totalLoadedTaxpayersJLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         totalLoadedTaxpayersJLabel.setForeground(Color.RED);
-        totalLoadedTaxpayersJLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        totalLoadedTaxpayersJLabel.setFont(new Font(TAHOMA, Font.BOLD, 14));
         totalLoadedTaxpayersJLabel.setBounds(247, 20, 75, 14);
         taxationMainWindowJFrame.getContentPane().add(totalLoadedTaxpayersJLabel);
 
@@ -58,42 +55,35 @@ public class MainJFrameWindow {
         taxationMainWindowJFrame.getContentPane().add(separator);
 
         JButton openTaxpayerLoadDataJDialog = new JButton("Load taxpayers data");
-        openTaxpayerLoadDataJDialog.setFont(new Font("Tahoma", Font.BOLD, 11));
+        openTaxpayerLoadDataJDialog.setFont(new Font(TAHOMA, Font.BOLD, 11));
         openTaxpayerLoadDataJDialog.setBounds(27, 55, 295, 53);
         taxationMainWindowJFrame.getContentPane().add(openTaxpayerLoadDataJDialog);
 
         JButton showLoadedTaxpayersDataButton = new JButton("Display taxpayers list");
         showLoadedTaxpayersDataButton.setEnabled(false);
-        showLoadedTaxpayersDataButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+        showLoadedTaxpayersDataButton.setFont(new Font(TAHOMA, Font.BOLD, 11));
         showLoadedTaxpayersDataButton.setBounds(27, 121, 295, 53);
         taxationMainWindowJFrame.getContentPane().add(showLoadedTaxpayersDataButton);
 
-        totalLoadedTaxpayersJLabel.addPropertyChangeListener("text", new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent e) {
-                showLoadedTaxpayersDataButton.setEnabled(!totalLoadedTaxpayersJLabel.getText().equals("0"));
+        totalLoadedTaxpayersJLabel.addPropertyChangeListener("text", e -> showLoadedTaxpayersDataButton.setEnabled(!totalLoadedTaxpayersJLabel.getText().equals("0")));
+
+        openTaxpayerLoadDataJDialog.addActionListener(arg0 -> {
+            JFileChooser afmInfoFilesFolderChooser = new JFileChooser();
+            afmInfoFilesFolderChooser.setCurrentDirectory(new java.io.File("."));
+            afmInfoFilesFolderChooser.setDialogTitle("Select the folder that contains <AFM>_INFO.* files");
+            afmInfoFilesFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            if (afmInfoFilesFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                String afmInfoFilesFolderPath = afmInfoFilesFolderChooser.getSelectedFile().toString();
+                JOptionPane.showMessageDialog(null, afmInfoFilesFolderPath, "Path of input files", JOptionPane.INFORMATION_MESSAGE);
+
+                database.setTaxpayersInfoFilesPath(afmInfoFilesFolderPath);
+
+                TaxpayerLoadDataJDialog taxpayerLoadDataJDialog = new TaxpayerLoadDataJDialog(taxationMainWindowJFrame);
+                taxpayerLoadDataJDialog.fillTaxpayersAfmInfoFilesJList(afmInfoFilesFolderPath);
+                taxpayerLoadDataJDialog.setVisible(true);
             }
-        });
 
-        openTaxpayerLoadDataJDialog.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                JFileChooser afmInfoFilesFolderChooser = new JFileChooser();
-                afmInfoFilesFolderChooser.setCurrentDirectory(new java.io.File("."));
-                afmInfoFilesFolderChooser.setDialogTitle("Select the folder that contains <AFM>_INFO.* files");
-                afmInfoFilesFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                Database database = Database.getInstance();
-
-                if (afmInfoFilesFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    String afmInfoFilesFolderPath = afmInfoFilesFolderChooser.getSelectedFile().toString();
-                    JOptionPane.showMessageDialog(null, afmInfoFilesFolderPath, "Path of input files", JOptionPane.INFORMATION_MESSAGE);
-
-                    database.setTaxpayersInfoFilesPath(afmInfoFilesFolderPath);
-
-                    TaxpayerLoadDataJDialog taxpayerLoadDataJDialog = new TaxpayerLoadDataJDialog(taxationMainWindowJFrame);
-                    taxpayerLoadDataJDialog.fillTaxpayersAfmInfoFilesJList(afmInfoFilesFolderPath);
-                    taxpayerLoadDataJDialog.setVisible(true);
-                }
-
-            }
         });
 
         showLoadedTaxpayersDataButton.addActionListener(arg0 -> {

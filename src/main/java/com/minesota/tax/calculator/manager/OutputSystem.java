@@ -1,13 +1,9 @@
 package com.minesota.tax.calculator.manager;
 
-import java.awt.Dialog.ModalExclusionType;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.text.DecimalFormat;
-
-import javax.swing.*;
-
+import com.minesota.tax.calculator.model.Database;
+import com.minesota.tax.calculator.model.Receipt;
+import com.minesota.tax.calculator.model.TaxPayer;
+import com.minesota.tax.calculator.util.TaxPayerUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -18,9 +14,12 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import com.minesota.tax.calculator.model.Database;
-import com.minesota.tax.calculator.model.Receipt;
-import com.minesota.tax.calculator.model.TaxPayer;
+import javax.swing.*;
+import java.awt.Dialog.ModalExclusionType;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
 
 public class OutputSystem {
 
@@ -63,7 +62,7 @@ public class OutputSystem {
         }
 
         Database database = Database.getInstance();
-        TaxPayer taxpayer = database.getTaxpayerFromArrayList(taxpayerIndex);
+        TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
         outputStream.println("Name: " + taxpayer.getName());
         outputStream.println("AFM: " + taxpayer.getAFM());
         outputStream.println("Status: " + taxpayer.getFamilyStatus());
@@ -100,7 +99,7 @@ public class OutputSystem {
         }
 
         Database database = Database.getInstance();
-        TaxPayer taxpayer = database.getTaxpayerFromArrayList(taxpayerIndex);
+        TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
         outputStream.println("<Name> " + taxpayer.getName() + " </Name>");
         outputStream.println("<AFM> " + taxpayer.getAFM() + " </AFM>");
         outputStream.println("<Status> " + taxpayer.getFamilyStatus() + " </Status>");
@@ -133,7 +132,7 @@ public class OutputSystem {
 
     public void saveTaxpayerInfoToTxtLogFile(String folderSavePath, int taxpayerIndex) {
         Database database = Database.getInstance();
-        TaxPayer taxpayer = database.getTaxpayerFromArrayList(taxpayerIndex);
+        TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
 
         PrintWriter outputStream = null;
         try {
@@ -153,11 +152,11 @@ public class OutputSystem {
         }
         outputStream.println("Total Tax: " + taxpayer.getTotalTax());
         outputStream.println("Total Receipts Amount: " + taxpayer.getTotalReceiptsAmount());
-        outputStream.println("Entertainment: " + taxpayer.getEntertainmentReceiptsTotalAmount());
-        outputStream.println("Basic: " + taxpayer.getBasicReceiptsTotalAmount());
-        outputStream.println("Travel: " + taxpayer.getTravelReceiptsTotalAmount());
-        outputStream.println("Health: " + taxpayer.getHealthReceiptsTotalAmount());
-        outputStream.println("Other: " + taxpayer.getOtherReceiptsTotalAmount());
+        outputStream.println("Entertainment: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Entertainment", taxpayer.getReceiptsArrayList()));
+        outputStream.println("Basic: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Basic", taxpayer.getReceiptsArrayList()));
+        outputStream.println("Travel: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Travel", taxpayer.getReceiptsArrayList()));
+        outputStream.println("Health: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Health", taxpayer.getReceiptsArrayList()));
+        outputStream.println("Other: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Other", taxpayer.getReceiptsArrayList()));
 
         outputStream.close();
 
@@ -166,7 +165,7 @@ public class OutputSystem {
 
     public void saveTaxpayerInfoToXmlLogFile(String folderSavePath, int taxpayerIndex) {
         Database database = Database.getInstance();
-        TaxPayer taxpayer = database.getTaxpayerFromArrayList(taxpayerIndex);
+        TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
 
         PrintWriter outputStream = null;
         try {
@@ -186,11 +185,11 @@ public class OutputSystem {
         }
         outputStream.println("<TotalTax> " + taxpayer.getTotalTax() + " </TotalTax>");
         outputStream.println("<Receipts> " + taxpayer.getTotalReceiptsAmount() + " </Receipts>");
-        outputStream.println("<Entertainment> " + taxpayer.getEntertainmentReceiptsTotalAmount() + " </Entertainment>");
-        outputStream.println("<Basic> " + taxpayer.getBasicReceiptsTotalAmount() + " </Basic>");
-        outputStream.println("<Travel> " + taxpayer.getTravelReceiptsTotalAmount() + " </Travel>");
-        outputStream.println("<Health> " + taxpayer.getHealthReceiptsTotalAmount() + " </Health>");
-        outputStream.println("<Other> " + taxpayer.getOtherReceiptsTotalAmount() + " </Other>");
+        outputStream.println("<Entertainment> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Entertainment", taxpayer.getReceiptsArrayList()) + " </Entertainment>");
+        outputStream.println("<Basic> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Basic", taxpayer.getReceiptsArrayList()) + " </Basic>");
+        outputStream.println("<Travel> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Travel", taxpayer.getReceiptsArrayList()) + " </Travel>");
+        outputStream.println("<Health> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Health", taxpayer.getReceiptsArrayList()) + " </Health>");
+        outputStream.println("<Other> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Other", taxpayer.getReceiptsArrayList()) + " </Other>");
 
         outputStream.close();
 
@@ -200,13 +199,13 @@ public class OutputSystem {
     public void createTaxpayerReceiptsPieJFreeChart(int taxpayerIndex) {
         receiptPieChartDataset = new DefaultPieDataset();
         Database database = Database.getInstance();
-        TaxPayer taxpayer = database.getTaxpayerFromArrayList(taxpayerIndex);
+        TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
 
-        receiptPieChartDataset.setValue("Basic", taxpayer.getBasicReceiptsTotalAmount());
-        receiptPieChartDataset.setValue("Entertainment", taxpayer.getEntertainmentReceiptsTotalAmount());
-        receiptPieChartDataset.setValue("Travel", taxpayer.getTravelReceiptsTotalAmount());
-        receiptPieChartDataset.setValue("Health", taxpayer.getHealthReceiptsTotalAmount());
-        receiptPieChartDataset.setValue("Other", taxpayer.getOtherReceiptsTotalAmount());
+        receiptPieChartDataset.setValue("Basic", TaxPayerUtils.getReceiptsTotalAmountByKind("Basic", taxpayer.getReceiptsArrayList()));
+        receiptPieChartDataset.setValue("Entertainment", TaxPayerUtils.getReceiptsTotalAmountByKind("Entertainment", taxpayer.getReceiptsArrayList()));
+        receiptPieChartDataset.setValue("Travel", TaxPayerUtils.getReceiptsTotalAmountByKind("Travel", taxpayer.getReceiptsArrayList()));
+        receiptPieChartDataset.setValue("Health", TaxPayerUtils.getReceiptsTotalAmountByKind("Health", taxpayer.getReceiptsArrayList()));
+        receiptPieChartDataset.setValue("Other", TaxPayerUtils.getReceiptsTotalAmountByKind("Other", taxpayer.getReceiptsArrayList()));
 
         receiptPieJFreeChart = ChartFactory.createPieChart("Receipt Pie Chart", receiptPieChartDataset);
         piePlot = (PiePlot) receiptPieJFreeChart.getPlot();
@@ -224,7 +223,7 @@ public class OutputSystem {
     public void createTaxpayerTaxAnalysisBarJFreeChart(int taxpayerIndex) {
         DefaultCategoryDataset taxAnalysisBarChartDataset = new DefaultCategoryDataset();
         Database database = Database.getInstance();
-        TaxPayer taxpayer = database.getTaxpayerFromArrayList(taxpayerIndex);
+        TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
 
         String taxVariationType = taxpayer.getTaxIncrease() != 0 ? "Tax Increase" : "Tax Decrease";
         double taxVariationAmount = taxpayer.getTaxIncrease() != 0 ? taxpayer.getTaxIncrease() : taxpayer.getTaxDecrease() * (-1);

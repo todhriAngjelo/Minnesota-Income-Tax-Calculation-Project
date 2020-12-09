@@ -1,13 +1,12 @@
 package com.minesota.tax.calculator.view;
 
+import com.minesota.tax.calculator.manager.OutputSystem;
+import com.minesota.tax.calculator.model.Database;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.*;
-
-import com.minesota.tax.calculator.manager.OutputSystem;
-import com.minesota.tax.calculator.model.Database;
 
 public class LoadedTaxpayersJDialog extends JDialog {
 
@@ -100,7 +99,7 @@ public class LoadedTaxpayersJDialog extends JDialog {
                 Database database = Database.getInstance();
 
                 if (loadedTaxpayersJList.getSelectedIndex() != -1) {
-                    JOptionPane.showMessageDialog(null, database.getTaxpayerFromArrayList(loadedTaxpayersJList.getSelectedIndex()).toString(), loadedTaxpayersJList.getSelectedValue().toString(), JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, database.getTaxPayerFromIndex(loadedTaxpayersJList.getSelectedIndex()).toString(), loadedTaxpayersJList.getSelectedValue().toString(), JOptionPane.PLAIN_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
                 }
@@ -176,7 +175,7 @@ public class LoadedTaxpayersJDialog extends JDialog {
                 if (taxpayerIndex != -1) {
                     JFileChooser saveFileFolderChooser = new JFileChooser();
                     saveFileFolderChooser.setCurrentDirectory(new java.io.File("."));
-                    saveFileFolderChooser.setDialogTitle("Choose save file for " + database.getTaxpayerFromArrayList(taxpayerIndex).getAFM() + "_LOG.txt");
+                    saveFileFolderChooser.setDialogTitle("Choose save file for " + database.getTaxPayerFromIndex(taxpayerIndex).getAFM() + "_LOG.txt");
                     saveFileFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
                     if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -199,7 +198,7 @@ public class LoadedTaxpayersJDialog extends JDialog {
                 if (taxpayerIndex != -1) {
                     JFileChooser saveFileFolderChooser = new JFileChooser();
                     saveFileFolderChooser.setCurrentDirectory(new java.io.File("."));
-                    saveFileFolderChooser.setDialogTitle("Choose save file for " + database.getTaxpayerFromArrayList(taxpayerIndex).getAFM() + "_LOG.xml");
+                    saveFileFolderChooser.setDialogTitle("Choose save file for " + database.getTaxPayerFromIndex(taxpayerIndex).getAFM() + "_LOG.xml");
                     saveFileFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
                     if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
