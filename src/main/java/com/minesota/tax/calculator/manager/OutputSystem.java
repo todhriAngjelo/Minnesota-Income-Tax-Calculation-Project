@@ -64,16 +64,16 @@ public class OutputSystem {
         Database database = Database.getInstance();
         TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
         outputStream.println("Name: " + taxpayer.getName());
-        outputStream.println("AFM: " + taxpayer.getAFM());
-        outputStream.println("Status: " + taxpayer.getFamilyStatus());
+        outputStream.println("AFM: " + taxpayer.getVat());
+        outputStream.println("Status: " + taxpayer.getFamilyStatus().getDescription());
         outputStream.println("Income: " + taxpayer.getIncome());
 
-        if (taxpayer.getReceiptsArrayList().size() > 0) {
+        if (taxpayer.getReceipts().size() > 0) {
             outputStream.println();
             outputStream.println("Receipts:");
             outputStream.println();
 
-            for (Receipt receipt : taxpayer.getReceiptsArrayList()) {
+            for (Receipt receipt : taxpayer.getReceipts()) {
                 outputStream.println("Receipt ID: " + receipt.getId());
                 outputStream.println("Date: " + receipt.getDate());
                 outputStream.println("Kind: " + receipt.getKind());
@@ -101,16 +101,16 @@ public class OutputSystem {
         Database database = Database.getInstance();
         TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
         outputStream.println("<Name> " + taxpayer.getName() + " </Name>");
-        outputStream.println("<AFM> " + taxpayer.getAFM() + " </AFM>");
-        outputStream.println("<Status> " + taxpayer.getFamilyStatus() + " </Status>");
+        outputStream.println("<AFM> " + taxpayer.getVat() + " </AFM>");
+        outputStream.println("<Status> " + taxpayer.getFamilyStatus().getDescription() + " </Status>");
         outputStream.println("<Income> " + taxpayer.getIncome() + " </Income>");
 
-        if (taxpayer.getReceiptsArrayList().size() > 0) {
+        if (taxpayer.getReceipts().size() > 0) {
             outputStream.println();
             outputStream.println("<Receipts>");
             outputStream.println();
 
-            for (Receipt receipt : taxpayer.getReceiptsArrayList()) {
+            for (Receipt receipt : taxpayer.getReceipts()) {
                 outputStream.println("<ReceiptID> " + receipt.getId() + " </ReceiptID>");
                 outputStream.println("<Date> " + receipt.getDate() + " </Date>");
                 outputStream.println("<Kind> " + receipt.getKind() + " </Kind>");
@@ -136,13 +136,13 @@ public class OutputSystem {
 
         PrintWriter outputStream = null;
         try {
-            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getAFM() + "_LOG.txt"));
+            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getVat() + "_LOG.txt"));
         } catch (FileNotFoundException e) {
-            System.out.println("Problem opening: " + folderSavePath + "//" + taxpayer.getAFM() + "_LOG.txt");
+            System.out.println("Problem opening: " + folderSavePath + "//" + taxpayer.getVat() + "_LOG.txt");
         }
 
         outputStream.println("Name: " + taxpayer.getName());
-        outputStream.println("AFM: " + taxpayer.getAFM());
+        outputStream.println("AFM: " + taxpayer.getVat());
         outputStream.println("Income: " + taxpayer.getIncome());
         outputStream.println("Basic Tax: " + taxpayer.getBasicTax());
         if (taxpayer.getTaxIncrease() != 0) {
@@ -151,12 +151,12 @@ public class OutputSystem {
             outputStream.println("Tax Decrease: " + taxpayer.getTaxDecrease());
         }
         outputStream.println("Total Tax: " + taxpayer.getTotalTax());
-        outputStream.println("Total Receipts Amount: " + taxpayer.getTotalReceiptsAmount());
-        outputStream.println("Entertainment: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Entertainment", taxpayer.getReceiptsArrayList()));
-        outputStream.println("Basic: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Basic", taxpayer.getReceiptsArrayList()));
-        outputStream.println("Travel: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Travel", taxpayer.getReceiptsArrayList()));
-        outputStream.println("Health: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Health", taxpayer.getReceiptsArrayList()));
-        outputStream.println("Other: " + TaxPayerUtils.getReceiptsTotalAmountByKind("Other", taxpayer.getReceiptsArrayList()));
+        outputStream.println("Total Receipts Amount: " + TaxPayerUtils.getReceiptsTotalAmount(taxpayer.getReceipts()));
+        outputStream.println("Entertainment: " + TaxPayerUtils.getReceiptsTotalAmountFor("Entertainment", taxpayer.getReceipts()));
+        outputStream.println("Basic: " + TaxPayerUtils.getReceiptsTotalAmountFor("Basic", taxpayer.getReceipts()));
+        outputStream.println("Travel: " + TaxPayerUtils.getReceiptsTotalAmountFor("Travel", taxpayer.getReceipts()));
+        outputStream.println("Health: " + TaxPayerUtils.getReceiptsTotalAmountFor("Health", taxpayer.getReceipts()));
+        outputStream.println("Other: " + TaxPayerUtils.getReceiptsTotalAmountFor("Other", taxpayer.getReceipts()));
 
         outputStream.close();
 
@@ -169,13 +169,13 @@ public class OutputSystem {
 
         PrintWriter outputStream = null;
         try {
-            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getAFM() + "_LOG.xml"));
+            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getVat() + "_LOG.xml"));
         } catch (FileNotFoundException e) {
-            System.out.println("Problem opening: " + folderSavePath + "//" + taxpayer.getAFM() + "_LOG.xml");
+            System.out.println("Problem opening: " + folderSavePath + "//" + taxpayer.getVat() + "_LOG.xml");
         }
 
         outputStream.println("<Name> " + taxpayer.getName() + " </Name>");
-        outputStream.println("<AFM> " + taxpayer.getAFM() + " </AFM>");
+        outputStream.println("<AFM> " + taxpayer.getVat() + " </AFM>");
         outputStream.println("<Income> " + taxpayer.getIncome() + " </Income>");
         outputStream.println("<BasicTax> " + taxpayer.getBasicTax() + " </BasicTax>");
         if (taxpayer.getTaxIncrease() != 0) {
@@ -184,12 +184,12 @@ public class OutputSystem {
             outputStream.println("<TaxDecrease> " + taxpayer.getTaxDecrease() + " </TaxDecrease>");
         }
         outputStream.println("<TotalTax> " + taxpayer.getTotalTax() + " </TotalTax>");
-        outputStream.println("<Receipts> " + taxpayer.getTotalReceiptsAmount() + " </Receipts>");
-        outputStream.println("<Entertainment> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Entertainment", taxpayer.getReceiptsArrayList()) + " </Entertainment>");
-        outputStream.println("<Basic> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Basic", taxpayer.getReceiptsArrayList()) + " </Basic>");
-        outputStream.println("<Travel> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Travel", taxpayer.getReceiptsArrayList()) + " </Travel>");
-        outputStream.println("<Health> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Health", taxpayer.getReceiptsArrayList()) + " </Health>");
-        outputStream.println("<Other> " + TaxPayerUtils.getReceiptsTotalAmountByKind("Other", taxpayer.getReceiptsArrayList()) + " </Other>");
+        outputStream.println("<Receipts> " + TaxPayerUtils.getReceiptsTotalAmount(taxpayer.getReceipts()) + " </Receipts>");
+        outputStream.println("<Entertainment> " + TaxPayerUtils.getReceiptsTotalAmountFor("Entertainment", taxpayer.getReceipts()) + " </Entertainment>");
+        outputStream.println("<Basic> " + TaxPayerUtils.getReceiptsTotalAmountFor("Basic", taxpayer.getReceipts()) + " </Basic>");
+        outputStream.println("<Travel> " + TaxPayerUtils.getReceiptsTotalAmountFor("Travel", taxpayer.getReceipts()) + " </Travel>");
+        outputStream.println("<Health> " + TaxPayerUtils.getReceiptsTotalAmountFor("Health", taxpayer.getReceipts()) + " </Health>");
+        outputStream.println("<Other> " + TaxPayerUtils.getReceiptsTotalAmountFor("Other", taxpayer.getReceipts()) + " </Other>");
 
         outputStream.close();
 
@@ -201,11 +201,11 @@ public class OutputSystem {
         Database database = Database.getInstance();
         TaxPayer taxpayer = database.getTaxPayerFromIndex(taxpayerIndex);
 
-        receiptPieChartDataset.setValue("Basic", TaxPayerUtils.getReceiptsTotalAmountByKind("Basic", taxpayer.getReceiptsArrayList()));
-        receiptPieChartDataset.setValue("Entertainment", TaxPayerUtils.getReceiptsTotalAmountByKind("Entertainment", taxpayer.getReceiptsArrayList()));
-        receiptPieChartDataset.setValue("Travel", TaxPayerUtils.getReceiptsTotalAmountByKind("Travel", taxpayer.getReceiptsArrayList()));
-        receiptPieChartDataset.setValue("Health", TaxPayerUtils.getReceiptsTotalAmountByKind("Health", taxpayer.getReceiptsArrayList()));
-        receiptPieChartDataset.setValue("Other", TaxPayerUtils.getReceiptsTotalAmountByKind("Other", taxpayer.getReceiptsArrayList()));
+        receiptPieChartDataset.setValue("Basic", TaxPayerUtils.getReceiptsTotalAmountFor("Basic", taxpayer.getReceipts()));
+        receiptPieChartDataset.setValue("Entertainment", TaxPayerUtils.getReceiptsTotalAmountFor("Entertainment", taxpayer.getReceipts()));
+        receiptPieChartDataset.setValue("Travel", TaxPayerUtils.getReceiptsTotalAmountFor("Travel", taxpayer.getReceipts()));
+        receiptPieChartDataset.setValue("Health", TaxPayerUtils.getReceiptsTotalAmountFor("Health", taxpayer.getReceipts()));
+        receiptPieChartDataset.setValue("Other", TaxPayerUtils.getReceiptsTotalAmountFor("Other", taxpayer.getReceipts()));
 
         receiptPieJFreeChart = ChartFactory.createPieChart("Receipt Pie Chart", receiptPieChartDataset);
         piePlot = (PiePlot) receiptPieJFreeChart.getPlot();

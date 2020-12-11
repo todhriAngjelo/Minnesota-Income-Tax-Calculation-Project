@@ -55,9 +55,9 @@ public class TaxCategoryBuilder {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Double getBasicTaxBy(FamilyStatusEnum familyStatus, double income) {
+    public static Double getBasicTaxBy(String familyStatus, double income) {
 
-        return taxCategories.get(familyStatus).stream()
+        return taxCategories.get(FamilyStatusEnum.fromValue(familyStatus)).stream()
                 .filter(taxCategory ->
                         income >= taxCategory.getLimits()[0] &&
                                 (income <= taxCategory.getLimits()[1] || taxCategory.getLimits()[1] == -1))

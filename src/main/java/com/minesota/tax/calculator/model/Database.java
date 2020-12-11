@@ -49,7 +49,7 @@ public class Database {
 
     public String getTaxpayerNameAfmValuesPairList(int index) {
         TaxPayer taxpayer = taxPayers.get(index);
-        return taxpayer.getName() + " | " + taxpayer.getAFM();
+        return taxpayer.getName() + " | " + taxpayer.getVat();
     }
 
     public String[] getTaxpayersNameAfmValuesPairList() {
@@ -57,7 +57,7 @@ public class Database {
 
         int c = 0;
         for (TaxPayer taxpayer : taxPayers) {
-            taxpayersNameAfmValuesPairList[c++] = taxpayer.getName() + " | " + taxpayer.getAFM();
+            taxpayersNameAfmValuesPairList[c++] = taxpayer.getName() + " | " + taxpayer.getVat();
         }
 
         return taxpayersNameAfmValuesPairList;
@@ -69,7 +69,7 @@ public class Database {
         OutputSystem outputSystem = OutputSystem.getInstance();
 
         for (File file : taxpayersInfoFilesPathFileObject.listFiles(fileNameFilter)) {
-            if (!file.getName().contains(taxPayers.get(index).getAFM())) continue;
+            if (!file.getName().contains(taxPayers.get(index).getVat())) continue;
 
             if (file.getName().toLowerCase().endsWith(".txt")) {
                 outputSystem.saveUpdatedTaxpayerTxtInputFile(file.getAbsolutePath(), index);

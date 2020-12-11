@@ -1,13 +1,17 @@
 package com.minesota.tax.calculator.manager;
 
+import com.minesota.tax.calculator.model.Database;
+import com.minesota.tax.calculator.model.FamilyStatusEnum;
+import com.minesota.tax.calculator.model.Receipt;
+import com.minesota.tax.calculator.model.TaxPayer;
+import com.minesota.tax.calculator.util.TaxPayerUtils;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
-import com.minesota.tax.calculator.model.Database;
-import com.minesota.tax.calculator.model.Receipt;
-import com.minesota.tax.calculator.model.TaxPayer;
+import static com.minesota.tax.calculator.util.TaxCategoryBuilder.getBasicTaxBy;
 
 public class InputSystem {
 
@@ -50,7 +54,12 @@ public class InputSystem {
         String taxpayerAFM = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[1][0], tagArray[1][1]);
         String taxpayerStatus = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[2][0], tagArray[2][1]);
         String taxpayerIncome = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[3][0], tagArray[3][1]);
-        TaxPayer newTaxpayer = new TaxPayer(taxpayerName, taxpayerAFM, taxpayerStatus, taxpayerIncome);
+        TaxPayer newTaxpayer = new TaxPayer(
+                taxpayerName,
+                taxpayerAFM,
+                FamilyStatusEnum.fromValue(taxpayerStatus),
+                taxpayerIncome,
+                getBasicTaxBy(taxpayerStatus.toLowerCase(), Double.parseDouble(taxpayerIncome)));
 
         String fileLine;
         while (inputStream.hasNextLine()) {
@@ -70,7 +79,8 @@ public class InputSystem {
             String receiptNumber = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[13][0], tagArray[13][1]);
             Receipt newReceipt = new Receipt(receiptKind, receiptID, receiptDate, receiptAmount, receiptCompany, receiptCountry, receiptCity, receiptStreet, receiptNumber);
 
-            newTaxpayer.addReceiptToList(newReceipt);
+            newTaxpayer.getReceipts().add(newReceipt);
+            TaxPayerUtils.applyTaxPayerTaxAdjustments(newTaxpayer);
         }
 
         Database database = Database.getInstance();

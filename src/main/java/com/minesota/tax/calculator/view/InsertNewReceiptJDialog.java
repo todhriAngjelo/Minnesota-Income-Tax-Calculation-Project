@@ -2,6 +2,7 @@ package com.minesota.tax.calculator.view;
 
 import com.minesota.tax.calculator.model.Database;
 import com.minesota.tax.calculator.model.Receipt;
+import com.minesota.tax.calculator.util.TaxPayerUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -177,7 +178,9 @@ public class InsertNewReceiptJDialog extends JDialog {
                 Receipt newReceipt = new Receipt(kindComboBox.getSelectedItem().toString(), receiptIdTextField.getText(),
                         dateTextField.getText(), amountTextField.getText(), companyTextField.getText(),
                         countryTextField.getText(), cityTextField.getText(), streetTextField.getText(), numberTextField.getText());
-                database.getTaxPayerFromIndex(taxpayerID).addReceiptToList(newReceipt);
+
+                database.getTaxPayerFromIndex(taxpayerID).getReceipts().add(newReceipt);
+                TaxPayerUtils.applyTaxPayerTaxAdjustments(database.getTaxPayerFromIndex(taxpayerID));
 
                 database.updateTaxpayerInputFile(taxpayerID);
 

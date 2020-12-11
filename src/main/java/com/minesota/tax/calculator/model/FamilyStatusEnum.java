@@ -16,4 +16,16 @@ public enum FamilyStatusEnum {
     public String getDescription() {
         return description;
     }
+
+    public static FamilyStatusEnum fromValue(String description) {
+        if (description == null) return null;
+        // todo handle this. if we go here app will break
+
+        for (FamilyStatusEnum familyStatus : FamilyStatusEnum.values()) {
+            if (familyStatus.getDescription().equalsIgnoreCase(description)) return familyStatus;
+        }
+
+        return null;
+        // todo handle this. if we go here app will break
+    }
 }
