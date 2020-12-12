@@ -1,13 +1,24 @@
 package com.minesota.tax.calculator.util;
 
-import com.minesota.tax.calculator.model.FamilyStatusEnum;
 import com.minesota.tax.calculator.model.TaxCategory;
+import com.minesota.tax.calculator.model.enumeration.FamilyStatusEnum;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class holds the logic for the taxpayer's tax categories based on his family status.
+ * Each tax payer pays a basic tax based on this income category ( upper and lower limits ) and then an
+ * addional tax that is a percentage of his total income.
+ * <p>
+ * Formula generally looks like this:
+ * basic tax = minTax + incomeBasedTaxPercentage * ( income - taxCategoryLowerLimit )
+ * <br>
+ * For example:
+ * 4746.76 + 7.85% * (income  -71680)
+ */
 public class TaxCategoryBuilder {
 
     private static final Map<FamilyStatusEnum, List<TaxCategory>> taxCategories = new HashMap<>();
@@ -51,10 +62,18 @@ public class TaxCategoryBuilder {
 
     }
 
-    public TaxCategoryBuilder() {
-        throw new IllegalStateException("Utility class");
+    private TaxCategoryBuilder() {
+        throw new IllegalStateException("Utility class. This class can not be initialized.");
     }
 
+    /**
+     * Calculates the taxpayer's basic tax based on his family status and income. Mechanism
+     * described here: http://www.revenue.state.mn.us/Forms_and_Instructions/it_algorithm_14.pdf
+     *
+     * @param familyStatus the taxpayer's family status ( in small letters and divided by spaces )
+     * @param income       the taxpayer's income
+     * @return the taxpayer's basic tax
+     */
     public static Double getBasicTaxBy(String familyStatus, double income) {
 
         return taxCategories.get(FamilyStatusEnum.fromValue(familyStatus)).stream()

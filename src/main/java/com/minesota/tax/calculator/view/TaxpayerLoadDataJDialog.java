@@ -1,6 +1,6 @@
 package com.minesota.tax.calculator.view;
 
-import com.minesota.tax.calculator.model.Database;
+import com.minesota.tax.calculator.manager.FileManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +12,7 @@ import static com.minesota.tax.calculator.app.ApplicationConstants.TAHOMA;
 public class TaxpayerLoadDataJDialog extends JDialog {
 
 	private final JList<String> taxpayersAfmInfoFilesJList;
-	private String afmInfoFilesFolderPath;
+	private String taxpayersFolderPath;
 
 	public TaxpayerLoadDataJDialog(JFrame appMainWindow) {
 
@@ -55,20 +55,20 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 
 		loadDataFromSelectedAfmInfoFilesButton.addActionListener(e -> {
 			List<String> afmInfoFilesListToLoad = taxpayersAfmInfoFilesJList.getSelectedValuesList();
-			Database database = Database.getInstance();
+			FileManager fileManager = FileManager.getInstance();
 
-			if (afmInfoFilesListToLoad.size() > 0) {
+			if (!afmInfoFilesListToLoad.isEmpty()) {
 				String confirmDialogText = "Load taxpayers data from the following files:\n";
 				for (String afmInfoFileName : afmInfoFilesListToLoad) {
-					confirmDialogText += afmInfoFileName + "\n";
+					confirmDialogText = confirmDialogText.concat(afmInfoFileName).concat("\n");
 				}
 				confirmDialogText += "Are you sure?";
 
 				int dialogResult = JOptionPane.showConfirmDialog(null, confirmDialogText, "Confirmation", JOptionPane.YES_NO_OPTION);
 				if (dialogResult == JOptionPane.YES_OPTION) {
-					database.proccessTaxpayersDataFromFilesIntoDatabase(afmInfoFilesFolderPath, afmInfoFilesListToLoad);
+					fileManager.saveTaxPayers(taxpayersFolderPath, afmInfoFilesListToLoad);
 					JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
-					totalLoadedTaxpayersJLabel.setText(Integer.toString(database.getTaxpayersArrayListSize()));
+					totalLoadedTaxpayersJLabel.setText(Integer.toString(fileManager.getCachedTaxPayers().size()));
 
 					dispose();
 				}
@@ -79,7 +79,7 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 	}
 
 	public void fillTaxpayersAfmInfoFilesJList(String afmInfoFilesFolderPath) {
-		this.afmInfoFilesFolderPath = afmInfoFilesFolderPath;
+		this.taxpayersFolderPath = afmInfoFilesFolderPath;
 
 		File folder = new File(afmInfoFilesFolderPath);
 		File[] folderFiles = folder.listFiles((dir, name) -> (name.toLowerCase().endsWith("_info.txt") || name.toLowerCase().endsWith("_info.xml")));

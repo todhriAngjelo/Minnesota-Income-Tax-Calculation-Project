@@ -1,5 +1,7 @@
 package com.minesota.tax.calculator.model;
 
+import com.minesota.tax.calculator.model.enumeration.FamilyStatusEnum;
+
 public class TaxCategory {
 
     private FamilyStatusEnum familyStatus;

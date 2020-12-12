@@ -1,4 +1,4 @@
-package com.minesota.tax.calculator.model;
+package com.minesota.tax.calculator.model.enumeration;
 
 public enum FamilyStatusEnum {
 

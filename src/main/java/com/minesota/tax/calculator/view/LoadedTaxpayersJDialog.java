@@ -1,12 +1,10 @@
 package com.minesota.tax.calculator.view;
 
+import com.minesota.tax.calculator.manager.FileManager;
 import com.minesota.tax.calculator.manager.OutputSystem;
-import com.minesota.tax.calculator.model.Database;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class LoadedTaxpayersJDialog extends JDialog {
 
@@ -94,136 +92,119 @@ public class LoadedTaxpayersJDialog extends JDialog {
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) loadedTaxpayersJList.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        showSelectedTaxpayerInfoButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                Database database = Database.getInstance();
+        showSelectedTaxpayerInfoButton.addActionListener(arg0 -> {
+            FileManager fileManager = FileManager.getInstance();
 
-                if (loadedTaxpayersJList.getSelectedIndex() != -1) {
-                    JOptionPane.showMessageDialog(null, database.getTaxPayerFromIndex(loadedTaxpayersJList.getSelectedIndex()).toString(), loadedTaxpayersJList.getSelectedValue().toString(), JOptionPane.PLAIN_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
-                }
+            if (loadedTaxpayersJList.getSelectedIndex() != -1) {
+                JOptionPane.showMessageDialog(null, fileManager.getCachedTaxPayers().get(loadedTaxpayersJList.getSelectedIndex()).toString(), loadedTaxpayersJList.getSelectedValue().toString(), JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        deleteSelectedTaxpayerFromDatabaseButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                Database database = Database.getInstance();
+        deleteSelectedTaxpayerFromDatabaseButton.addActionListener(arg0 -> {
+            FileManager fileManager = FileManager.getInstance();
 
-                if (loadedTaxpayersJList.getSelectedIndex() != -1) {
-                    int dialogResult = JOptionPane.showConfirmDialog(null, "Delete selected taxpayer(" + loadedTaxpayersJList.getSelectedValue().toString() + ") from database?", "Are you sure?", JOptionPane.YES_NO_OPTION);
-                    if (dialogResult == JOptionPane.YES_OPTION) {
-                        database.removeTaxpayerFromArrayList(loadedTaxpayersJList.getSelectedIndex());
+            if (loadedTaxpayersJList.getSelectedIndex() != -1) {
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Delete selected taxpayer(" + loadedTaxpayersJList.getSelectedValue().toString() + ") from database?", "Are you sure?", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    fileManager.getCachedTaxPayers().remove(loadedTaxpayersJList.getSelectedIndex());
 
-                        fillLoadedTaxpayersJList();
+                    fillLoadedTaxpayersJList();
 
-                        JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
-                        totalLoadedTaxpayersJLabel.setText(Integer.toString(database.getTaxpayersArrayListSize()));
+                    JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
+                    totalLoadedTaxpayersJLabel.setText(Integer.toString(fileManager.getCachedTaxPayers().size()));
 
-                        if (database.getTaxpayersArrayListSize() == 0) dispose();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
+                    if (fileManager.getCachedTaxPayers().isEmpty()) dispose();
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        showSelectedTaxpayerReceiptsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                if (loadedTaxpayersJList.getSelectedIndex() != -1) {
-                    TaxpayerReceiptsManagementJDialog taxpayerReceiptsManagementJDialog = new TaxpayerReceiptsManagementJDialog(loadedTaxpayersJList.getSelectedValue().toString(), loadedTaxpayersJList.getSelectedIndex());
-                    taxpayerReceiptsManagementJDialog.fillTaxpayerReceiptsJList();
-                    taxpayerReceiptsManagementJDialog.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
-                }
+        showSelectedTaxpayerReceiptsButton.addActionListener(arg0 -> {
+            if (loadedTaxpayersJList.getSelectedIndex() != -1) {
+                TaxpayerReceiptsManagementJDialog taxpayerReceiptsManagementJDialog = new TaxpayerReceiptsManagementJDialog(loadedTaxpayersJList.getSelectedValue().toString(), loadedTaxpayersJList.getSelectedIndex());
+                taxpayerReceiptsManagementJDialog.fillTaxpayerReceiptsJList();
+                taxpayerReceiptsManagementJDialog.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        showSelectedTaxpayerPieChartButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
-                OutputSystem outputSystem = OutputSystem.getInstance();
+        showSelectedTaxpayerPieChartButton.addActionListener(arg0 -> {
+            int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
+            OutputSystem outputSystem = OutputSystem.getInstance();
 
-                if (taxpayerIndex != -1) {
-                    outputSystem.createTaxpayerReceiptsPieJFreeChart(taxpayerIndex);
-                } else {
-                    JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
-                }
+            if (taxpayerIndex != -1) {
+                outputSystem.createTaxpayerReceiptsPieJFreeChart(taxpayerIndex);
+            } else {
+                JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        showSelectedTaxpayerBarChartButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
-                OutputSystem outputSystem = OutputSystem.getInstance();
+        showSelectedTaxpayerBarChartButton.addActionListener(arg0 -> {
+            int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
+            OutputSystem outputSystem = OutputSystem.getInstance();
 
-                if (taxpayerIndex != -1) {
-                    outputSystem.createTaxpayerTaxAnalysisBarJFreeChart(taxpayerIndex);
-                } else {
-                    JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
-                }
+            if (taxpayerIndex != -1) {
+                outputSystem.createTaxpayerTaxAnalysisBarJFreeChart(taxpayerIndex);
+            } else {
+                JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        saveSelectedTaxpayerInfoToTxtButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
-                Database database = Database.getInstance();
-                OutputSystem outputSystem = OutputSystem.getInstance();
+        saveSelectedTaxpayerInfoToTxtButton.addActionListener(e -> {
+            int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
+            FileManager fileManager = FileManager.getInstance();
+            OutputSystem outputSystem = OutputSystem.getInstance();
 
-                if (taxpayerIndex != -1) {
-                    JFileChooser saveFileFolderChooser = new JFileChooser();
-                    saveFileFolderChooser.setCurrentDirectory(new java.io.File("."));
-                    saveFileFolderChooser.setDialogTitle("Choose save file for " + database.getTaxPayerFromIndex(taxpayerIndex).getVat() + "_LOG.txt");
-                    saveFileFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if (taxpayerIndex != -1) {
+                JFileChooser saveFileFolderChooser = new JFileChooser();
+                saveFileFolderChooser.setCurrentDirectory(new java.io.File("."));
+                saveFileFolderChooser.setDialogTitle("Choose save file for " + fileManager.getCachedTaxPayers().get(taxpayerIndex).getVat() + "_LOG.txt");
+                saveFileFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-                    if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                        String savePath = saveFileFolderChooser.getSelectedFile().toString();
+                if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String savePath = saveFileFolderChooser.getSelectedFile().toString();
 
-                        outputSystem.saveTaxpayerInfoToTxtLogFile(savePath, taxpayerIndex);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
+                    outputSystem.saveTaxpayerInfoToTxtLogFile(savePath, taxpayerIndex);
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        saveSelectedTaxpayerInfoToXmlButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
-                Database database = Database.getInstance();
-                OutputSystem outputSystem = OutputSystem.getInstance();
+        saveSelectedTaxpayerInfoToXmlButton.addActionListener(e -> {
+            int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
+            FileManager fileManager = FileManager.getInstance();
+            OutputSystem outputSystem = OutputSystem.getInstance();
 
-                if (taxpayerIndex != -1) {
-                    JFileChooser saveFileFolderChooser = new JFileChooser();
-                    saveFileFolderChooser.setCurrentDirectory(new java.io.File("."));
-                    saveFileFolderChooser.setDialogTitle("Choose save file for " + database.getTaxPayerFromIndex(taxpayerIndex).getVat() + "_LOG.xml");
-                    saveFileFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if (taxpayerIndex != -1) {
+                JFileChooser saveFileFolderChooser = new JFileChooser();
+                saveFileFolderChooser.setCurrentDirectory(new java.io.File("."));
+                saveFileFolderChooser.setDialogTitle("Choose save file for " + fileManager.getCachedTaxPayers().get(taxpayerIndex).getVat() + "_LOG.xml");
+                saveFileFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-                    if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                        String savePath = saveFileFolderChooser.getSelectedFile().toString();
+                if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String savePath = saveFileFolderChooser.getSelectedFile().toString();
 
-                        outputSystem.saveTaxpayerInfoToXmlLogFile(savePath, taxpayerIndex);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
+                    outputSystem.saveTaxpayerInfoToXmlLogFile(savePath, taxpayerIndex);
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "No taxpayer selected", "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
     }
 
     public void fillLoadedTaxpayersJList() {
-        Database database = Database.getInstance();
-        String[] jlistValues = database.getTaxpayersNameAfmValuesPairList();
+        String[] jlistValues = FileManager.getFormattedTaxPayersStrings();
 
         loadedTaxpayersJList.setModel(new AbstractListModel() {
             final String[] values = jlistValues;
-
             public int getSize() {
                 return values.length;
             }
-
             public Object getElementAt(int index) {
                 return values[index];
             }

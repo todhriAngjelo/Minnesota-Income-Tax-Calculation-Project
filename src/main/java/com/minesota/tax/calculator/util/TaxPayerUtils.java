@@ -8,10 +8,17 @@ import java.util.List;
 public class TaxPayerUtils {
 
     private TaxPayerUtils() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Utility class. This class can not be initialized.");
     }
 
-    public static double getReceiptsTotalAmountFor(String receiptKind, List<Receipt> receipts) {
+    /**
+     * Sums total amount on the list of receipts with a specific receipt kind
+     *
+     * @param receiptKind the receipt kind ( e.g. entartainment )
+     * @param receipts    the list of receipts
+     * @return the total receipts amount
+     */
+    public static double getReceiptsTotalAmount(String receiptKind, List<Receipt> receipts) {
 
         return receipts.stream()
                 .filter(rec -> rec.getKind().equals(receiptKind))
@@ -19,12 +26,24 @@ public class TaxPayerUtils {
                 .reduce((double) 0, Double::sum);
     }
 
+    /**
+     * Sums total amount on the list of receipts
+     *
+     * @param receipts the list of receipts
+     * @return the total receipts amount
+     */
     public static double getReceiptsTotalAmount(List<Receipt> receipts) {
         return receipts.stream()
                 .map(Receipt::getAmount)
                 .reduce((double) 0, Double::sum);
     }
 
+    /**
+     * Based on the receipts that a tax payer has turned in the system he gets
+     * a tax increase or decrease accordingly
+     *
+     * @param taxPayer the taxpayer object to be adjusted
+     */
     public static void applyTaxPayerTaxAdjustments(TaxPayer taxPayer) {
         double receiptsTotal = getReceiptsTotalAmount(taxPayer.getReceipts());
 
@@ -40,5 +59,4 @@ public class TaxPayerUtils {
 
         taxPayer.setTotalTax(taxPayer.getBasicTax() + taxPayer.getTaxIncrease() - taxPayer.getTaxDecrease());
     }
-
 }

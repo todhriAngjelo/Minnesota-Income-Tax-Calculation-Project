@@ -1,6 +1,6 @@
 package com.minesota.tax.calculator.view;
 
-import com.minesota.tax.calculator.model.Database;
+import com.minesota.tax.calculator.manager.FileManager;
 import com.minesota.tax.calculator.model.Receipt;
 
 import javax.swing.*;
@@ -71,12 +71,12 @@ public class TaxpayerReceiptsManagementJDialog extends JDialog {
 
         showSelectedReceiptDetailsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                Database database = Database.getInstance();
+                FileManager fileManager = FileManager.getInstance();
 
                 if (taxpayerReceiptsJList.getSelectedIndex() != -1) {
                     JOptionPane.showMessageDialog(
                             null,
-                            database.getTaxPayerFromIndex(taxpayerID).getReceipts().get(taxpayerReceiptsJList.getSelectedIndex()).toString(),
+                            fileManager.getCachedTaxPayers().get(taxpayerID).getReceipts().get(taxpayerReceiptsJList.getSelectedIndex()).toString(),
                             taxpayerReceiptsJList.getSelectedValue().toString(),
                             JOptionPane.PLAIN_MESSAGE);
                 } else {
@@ -95,14 +95,14 @@ public class TaxpayerReceiptsManagementJDialog extends JDialog {
         });
 
         deleteSelectedReceiptButton.addActionListener(e -> {
-            Database database = Database.getInstance();
+            FileManager fileManager = FileManager.getInstance();
 
             if (taxpayerReceiptsJList.getSelectedIndex() != -1) {
                 int dialogResult = JOptionPane.showConfirmDialog(null, "Delete selected receipt(" + taxpayerReceiptsJList.getSelectedValue().toString() + ") ?", "Are you sure?", JOptionPane.YES_NO_OPTION);
                 if (dialogResult == JOptionPane.YES_OPTION) {
-                    database.getTaxPayerFromIndex(taxpayerID).getReceipts().remove(taxpayerReceiptsJList.getSelectedIndex()); // todo check if i can remove - remove by index
+                    fileManager.getCachedTaxPayers().get(taxpayerID).getReceipts().remove(taxpayerReceiptsJList.getSelectedIndex()); // todo check if i can remove - remove by index
 
-                    database.updateTaxpayerInputFile(taxpayerID);
+                    fileManager.updateTaxpayerInputFile(taxpayerID);
 
                     fillTaxpayerReceiptsJList();
                 }
@@ -113,12 +113,12 @@ public class TaxpayerReceiptsManagementJDialog extends JDialog {
     }
 
     public void fillTaxpayerReceiptsJList() {
-        Database database = Database.getInstance();
+        FileManager fileManager = FileManager.getInstance();
 
-        String[] receiptsList = new String[database.getTaxPayerFromIndex(taxpayerID).getReceipts().size()];
+        String[] receiptsList = new String[fileManager.getCachedTaxPayers().get(taxpayerID).getReceipts().size()];
 
         int c = 0;
-        for (Receipt receipt : database.getTaxPayerFromIndex(taxpayerID).getReceipts()) {
+        for (Receipt receipt : fileManager.getCachedTaxPayers().get(taxpayerID).getReceipts()) {
             receiptsList[c++] = receipt.getId() + " | " + receipt.getDate() + " | " + receipt.getAmount();
         }
 
