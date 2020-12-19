@@ -100,9 +100,17 @@ public class LoadedTaxpayersJDialog extends JDialog {
         showSelectedTaxpayerInfoButton.addActionListener(arg0 -> {
 
             if (loadedTaxpayersJList.getSelectedIndex() != -1) {
-                JOptionPane.showMessageDialog(null, filesManager.getCachedTaxPayers().get(loadedTaxpayersJList.getSelectedIndex()).toString(), loadedTaxpayersJList.getSelectedValue().toString(), JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        null,
+                        filesManager.getCachedTaxPayers().get(loadedTaxpayersJList.getSelectedIndex()).toString(),
+                        loadedTaxpayersJList.getSelectedValue().toString(),
+                        JOptionPane.PLAIN_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, NO_TAXPAYER_SELECTED_DIALOG_MESSAGE, ERROR_TITLE, JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        null,
+                        NO_TAXPAYER_SELECTED_DIALOG_MESSAGE,
+                        ERROR_TITLE,
+                        JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -159,7 +167,7 @@ public class LoadedTaxpayersJDialog extends JDialog {
             }
         });
 
-        // save/update taxpayer in txt file
+        // create taxpayer txt log file
         saveSelectedTaxpayerInfoToTxtButton.addActionListener(e -> {
             int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
 
@@ -172,14 +180,14 @@ public class LoadedTaxpayersJDialog extends JDialog {
                 if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String savePath = saveFileFolderChooser.getSelectedFile().toString();
 
-                    filesManager.saveTxtTaxpayerToFile(savePath, taxpayerIndex);
+                    filesManager.createTxtTaxpayerLogFile(savePath, taxpayerIndex);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, NO_TAXPAYER_SELECTED_DIALOG_MESSAGE, ERROR_TITLE, JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        // save/update taxpayer in xml file
+        // create taxpayer xml log file
         saveSelectedTaxpayerInfoToXmlButton.addActionListener(e -> {
             int taxpayerIndex = loadedTaxpayersJList.getSelectedIndex();
 
@@ -192,7 +200,7 @@ public class LoadedTaxpayersJDialog extends JDialog {
                 if (saveFileFolderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String savePath = saveFileFolderChooser.getSelectedFile().toString();
 
-                    filesManager.updateXmlTaxpayerLogFile(savePath, taxpayerIndex);
+                    filesManager.createXmlTaxpayerLogFile(savePath, taxpayerIndex);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, NO_TAXPAYER_SELECTED_DIALOG_MESSAGE, ERROR_TITLE, JOptionPane.WARNING_MESSAGE);

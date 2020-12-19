@@ -182,7 +182,7 @@ public class InsertNewReceiptJDialog extends JDialog {
                 filesManager.getCachedTaxPayers().get(taxpayerID).getReceipts().add(newReceipt);
                 TaxPayerUtils.applyTaxPayerTaxAdjustments(filesManager.getCachedTaxPayers().get(taxpayerID));
 
-                filesManager.updateTaxpayerInputFile(taxpayerID);
+                filesManager.updateTaxpayerReceipts(taxpayerID);
 
                 dispose();
             } else {

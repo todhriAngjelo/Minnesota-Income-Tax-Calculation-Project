@@ -30,6 +30,9 @@ public class FilesManager {
     private final List<TaxPayer> cachedTaxPayers = new ArrayList<>();
     private String taxPayersFilePath;
 
+    /**
+     * Returns an instance of the fila manager object ( singleton )
+     */
     public static FilesManager getInstance() {
         if (filesManagerInstance == null) {
             filesManagerInstance = new FilesManager();
@@ -59,11 +62,11 @@ public class FilesManager {
         return taxpayersNameAfmValuesPairList;
     }
 
-    public static Scanner getScanner(String afmInfoFileFolderPath, String afmInfoFile) {
+    public static Scanner getScanner(String folderPath, String filename) {
         try {
-            return new Scanner(new FileInputStream(afmInfoFileFolderPath + "\\" + afmInfoFile));
+            return new Scanner(new FileInputStream(folderPath + "\\" + filename));
         } catch (FileNotFoundException e) {
-            logger.warning(PROBLEM_OPENING_STRING + afmInfoFile + "file. ");
+            logger.warning(PROBLEM_OPENING_STRING + filename + "file. ");
             System.exit(0);
         }
         return null;
@@ -74,21 +77,149 @@ public class FilesManager {
      * xml or txt files and caches the tax payers info
      * <br>
      *
-     * @param folderPath        the folder path where the tax payer file names are contained
-     * @param taxPayerFileNames the tax payer file names with their respective file extension
+     * @param folderPath the folder path where the tax payer file names are contained
+     * @param filenames  the tax payer file names with their respective file extension
      */
-    public void cacheTaxPayers(String folderPath, List<String> taxPayerFileNames) {
+    public void cacheTaxPayers(String folderPath, List<String> filenames) {
 
-        for (String tpFile : taxPayerFileNames) {
-            Scanner scanner = getScanner(folderPath, tpFile);
-            if (tpFile.endsWith(".txt")) {
+        for (String filename : filenames) {
+            Scanner scanner = getScanner(folderPath, filename);
+            if (filename.endsWith(".txt")) {
                 cachedTaxPayers.add(parseTaxPayerFile(scanner, txtFileTags));
-            } else if (tpFile.endsWith(".xml")) {
+            } else if (filename.endsWith(".xml")) {
                 cachedTaxPayers.add(parseTaxPayerFile(scanner, xmlFileTags));
             }
         }
     }
 
+    /**
+     * Given a taxpayer index and a folder save path, saves selected taxpayer into _LOG.txt file.
+     * The log file contains the taxpayer basic information,
+     * his calculated tax information ( total tax, basic tax, increased/decreased tax ) and
+     * his receipts total amounts.
+     *
+     * @param folderSavePath save folder path
+     * @param taxpayerIndex  the selected taxpayer index
+     */
+    public void createTxtTaxpayerLogFile(String folderSavePath, int taxpayerIndex) {
+        TaxPayer taxpayer = cachedTaxPayers.get(taxpayerIndex);
+
+        PrintWriter outputStream = null;
+        try {
+            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getVat() + ApplicationConstants.TXT_LOG_FILE_SUFFIX));
+        } catch (FileNotFoundException e) {
+            logger.warning(PROBLEM_OPENING_STRING + folderSavePath + "//" + taxpayer.getVat() + TXT_LOG_FILE_SUFFIX);
+        }
+
+        outputStream.println("Name: " + taxpayer.getName());
+        outputStream.println("AFM: " + taxpayer.getVat());
+        outputStream.println("Income: " + taxpayer.getIncome());
+        outputStream.println("Basic Tax: " + taxpayer.getBasicTax());
+        if (taxpayer.getTaxIncrease() != 0) {
+            outputStream.println("Tax Increase: " + taxpayer.getTaxIncrease());
+        } else {
+            outputStream.println("Tax Decrease: " + taxpayer.getTaxDecrease());
+        }
+        outputStream.println("Total Tax: " + taxpayer.getTotalTax());
+        outputStream.println("Total Receipts Amount: " + TaxPayerUtils.getReceiptsTotalAmount(taxpayer.getReceipts()));
+        outputStream.println("Entertainment: " + TaxPayerUtils.getReceiptsTotalAmount("Entertainment", taxpayer.getReceipts()));
+        outputStream.println("Basic: " + TaxPayerUtils.getReceiptsTotalAmount("Basic", taxpayer.getReceipts()));
+        outputStream.println("Travel: " + TaxPayerUtils.getReceiptsTotalAmount("Travel", taxpayer.getReceipts()));
+        outputStream.println("Health: " + TaxPayerUtils.getReceiptsTotalAmount("Health", taxpayer.getReceipts()));
+        outputStream.println("Other: " + TaxPayerUtils.getReceiptsTotalAmount("Other", taxpayer.getReceipts()));
+
+        outputStream.close();
+
+        JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Given a taxpayer index and a folder save path, saves selected taxpayer into _LOG.xml file.
+     * The log file contains the taxpayer basic information,
+     * his calculated tax information ( total tax, basic tax, increased/decreased tax ) and
+     * his receipts total amounts.
+     *
+     * @param folderSavePath save folder path
+     * @param taxpayerIndex  the selected taxpayer index
+     */
+    public void createXmlTaxpayerLogFile(String folderSavePath, int taxpayerIndex) {
+        TaxPayer taxpayer = cachedTaxPayers.get(taxpayerIndex);
+
+        PrintWriter outputStream = null;
+        try {
+            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getVat() + XML_LOG_FILE_SUFFIX));
+        } catch (FileNotFoundException e) {
+            logger.warning(PROBLEM_OPENING_STRING + folderSavePath + "//" + taxpayer.getVat() + XML_LOG_FILE_SUFFIX);
+        }
+
+        if (outputStream == null) {
+            logger.warning("Something went wrong while updating xml file. Empty output stream");
+            return;
+        }
+
+        outputStream.println("<Name> " + taxpayer.getName() + " </Name>");
+        outputStream.println("<AFM> " + taxpayer.getVat() + " </AFM>");
+        outputStream.println("<Income> " + taxpayer.getIncome() + " </Income>");
+        outputStream.println("<BasicTax> " + taxpayer.getBasicTax() + " </BasicTax>");
+        if (taxpayer.getTaxIncrease() != 0) {
+            outputStream.println("<TaxIncrease> " + taxpayer.getTaxIncrease() + " </TaxIncrease>");
+        } else {
+            outputStream.println("<TaxDecrease> " + taxpayer.getTaxDecrease() + " </TaxDecrease>");
+        }
+        outputStream.println("<TotalTax> " + taxpayer.getTotalTax() + " </TotalTax>");
+        outputStream.println("<Receipts> " + TaxPayerUtils.getReceiptsTotalAmount(taxpayer.getReceipts()) + " </Receipts>");
+        outputStream.println("<Entertainment> " + TaxPayerUtils.getReceiptsTotalAmount("Entertainment", taxpayer.getReceipts()) + " </Entertainment>");
+        outputStream.println("<Basic> " + TaxPayerUtils.getReceiptsTotalAmount("Basic", taxpayer.getReceipts()) + " </Basic>");
+        outputStream.println("<Travel> " + TaxPayerUtils.getReceiptsTotalAmount("Travel", taxpayer.getReceipts()) + " </Travel>");
+        outputStream.println("<Health> " + TaxPayerUtils.getReceiptsTotalAmount("Health", taxpayer.getReceipts()) + " </Health>");
+        outputStream.println("<Other> " + TaxPayerUtils.getReceiptsTotalAmount("Other", taxpayer.getReceipts()) + " </Other>");
+
+        outputStream.close();
+
+        JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Given a taxpayer index this method replaces the already existing _INFO file with a new one
+     * that holds the current taxpayer instance details ( with the new/modified/deleted receipts )
+     *
+     * @param index the taxpayer index
+     */
+    public void updateTaxpayerReceipts(int index) {
+        File filepath = new File(taxPayersFilePath);
+        FilenameFilter filenameFilter = (dir, name) -> (name.toLowerCase().endsWith("_info.txt") || name.toLowerCase().endsWith("_info.xml"));
+
+        File[] filteredFiles = filepath.listFiles(filenameFilter);
+
+        if (filteredFiles == null) {
+            logger.warning("No log files found at the directory");
+            return;
+        }
+
+        if (filteredFiles.length > 1) {
+            logger.warning("More than one info files found at the directory");
+            return; // break update execution
+        }
+
+        if (filteredFiles[0] != null && filteredFiles[0].getName().toLowerCase().endsWith(".txt"))
+            updateTxtTaxpayerFile(filepath.getAbsolutePath(), index);
+
+        if (filepath.getName().toLowerCase().endsWith(".xml"))
+            updateXmlTaxpayerFile(filepath.getAbsolutePath(), index);
+    }
+
+    public List<TaxPayer> getCachedTaxPayers() {
+        return cachedTaxPayers;
+    }
+
+    /**
+     * Abstractly parses a txt or xml file ( given the proper tagArrays ) and returns
+     * a taxpayer object.
+     *
+     * @param inputStream the scanner input stream
+     * @param tagArray    the xml or txt tag array
+     * @return a taxpayer from the parsed txt or xml file
+     */
     private TaxPayer parseTaxPayerFile(Scanner inputStream, String[][] tagArray) {
         String taxpayerName = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[0][0], tagArray[0][1]);
         String taxpayerAFM = getParameterValueFromFileLine(inputStream.nextLine(), tagArray[1][0], tagArray[1][1]);
@@ -104,6 +235,8 @@ public class FilesManager {
         String fileLine;
         while (inputStream.hasNextLine()) {
             fileLine = inputStream.nextLine();
+            if (fileLine.equals("")) continue;
+            if (fileLine.contains(tagArray[4][0])) continue;
             if (fileLine.contains("</Receipts>")) break;
 
             String receiptID = getParameterValueFromFileLine(fileLine, tagArray[5][0], tagArray[5][1]);
@@ -124,33 +257,54 @@ public class FilesManager {
         return newTaxpayer;
     }
 
+//    // todo refactor file parsing mechanism
+//    void parseTxtFile(String folderPath, String filename) {
+//        Scanner scanner = getScanner(folderPath, filename);
+//        Map<String, String> taxPayerMap = new HashMap<>();
+//        Map<Integer, Map<String, String>> receiptsMap = new HashMap<>();
+//
+//        // scan basic taxpayer info
+//        while (scanner.hasNextLine()) {
+//            String currentLine = scanner.nextLine();
+//
+//            if (currentLine.equals("") || currentLine.equals("\n")) continue;
+//            if (currentLine.equals("Receipts:")) break;
+//
+//            String[] splitLine = currentLine.split(":");
+//            taxPayerMap.put(splitLine[0], splitLine[1]);
+//        }
+//
+//        // scan taxpayer receipts info
+//        scanner.nextLine();
+//        int receiptId;
+//        Map<String, String> receiptMap = new HashMap<>();
+//        while (scanner.hasNextLine()) {
+//            String currentLine = scanner.nextLine();
+//
+//            if (currentLine.equals("") || currentLine.equals("\n")) {
+//                receiptsMap.put(Integer.parseInt(receiptMap.get("Receipt ID")), receiptMap);
+//                receiptMap.clear();
+//                continue;
+//            }
+//
+//            String[] splitLine = currentLine.split(":");
+//            receiptMap.put(splitLine[0], splitLine[1]);
+//        }
+//
+
+//    }
+
     private String getParameterValueFromFileLine(String fileLine, String parameterStartField, String parameterEndField) {
         return fileLine.substring(parameterStartField.length(), fileLine.length() - parameterEndField.length());
     }
 
-    public void updateTaxpayerInputFile(int index) {
-        File filepath = new File(taxPayersFilePath);
-        FilenameFilter filenameFilter = (dir, name) -> (name.toLowerCase().endsWith("_info.txt") || name.toLowerCase().endsWith("_info.xml"));
-
-        File[] filteredFiles = filepath.listFiles(filenameFilter);
-
-        if (filteredFiles == null) {
-            logger.warning("No log files found at the directory");
-            return;
-        }
-
-        if (filteredFiles.length > 1) {
-            logger.warning("More than one info files found at the directory");
-            return; // break update execution
-        }
-
-        if (filteredFiles[0] != null && filteredFiles[0].getName().toLowerCase().endsWith(".txt"))
-            updateTxtTaxpayerLogFile(filepath.getAbsolutePath(), index);
-
-        if (filepath.getName().toLowerCase().endsWith(".xml"))
-            updateXmlTaxpayerFile(filepath.getAbsolutePath(), index);
-    }
-
+    /**
+     * Given a filepath and a taxpayer index it creates/updates a xml file
+     * with the current taxpayer info
+     *
+     * @param filePath      the filepath to create/replace
+     * @param taxpayerIndex the taxpayer index
+     */
     private void updateXmlTaxpayerFile(String filePath, int taxpayerIndex) {
         PrintWriter outputStream = null;
         try {
@@ -195,44 +349,13 @@ public class FilesManager {
     }
 
     /**
-     * Given a taxpayer index and a folder save path, saves selected taxpayer into _LOG.txt file
+     * Given a filepath and a taxpayer index it creates/updates a txt file
+     * with the current taxpayer info
      *
-     * @param folderSavePath save folder path
-     * @param taxpayerIndex  the selected taxpayer index
+     * @param filePath      the filepath to create/replace
+     * @param taxpayerIndex the taxpayer index
      */
-    public void saveTxtTaxpayerToFile(String folderSavePath, int taxpayerIndex) {
-        TaxPayer taxpayer = cachedTaxPayers.get(taxpayerIndex);
-
-        PrintWriter outputStream = null;
-        try {
-            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getVat() + ApplicationConstants.TXT_LOG_FILE_SUFFIX));
-        } catch (FileNotFoundException e) {
-            logger.warning(PROBLEM_OPENING_STRING + folderSavePath + "//" + taxpayer.getVat() + TXT_LOG_FILE_SUFFIX);
-        }
-
-        outputStream.println("Name: " + taxpayer.getName());
-        outputStream.println("AFM: " + taxpayer.getVat());
-        outputStream.println("Income: " + taxpayer.getIncome());
-        outputStream.println("Basic Tax: " + taxpayer.getBasicTax());
-        if (taxpayer.getTaxIncrease() != 0) {
-            outputStream.println("Tax Increase: " + taxpayer.getTaxIncrease());
-        } else {
-            outputStream.println("Tax Decrease: " + taxpayer.getTaxDecrease());
-        }
-        outputStream.println("Total Tax: " + taxpayer.getTotalTax());
-        outputStream.println("Total Receipts Amount: " + TaxPayerUtils.getReceiptsTotalAmount(taxpayer.getReceipts()));
-        outputStream.println("Entertainment: " + TaxPayerUtils.getReceiptsTotalAmount("Entertainment", taxpayer.getReceipts()));
-        outputStream.println("Basic: " + TaxPayerUtils.getReceiptsTotalAmount("Basic", taxpayer.getReceipts()));
-        outputStream.println("Travel: " + TaxPayerUtils.getReceiptsTotalAmount("Travel", taxpayer.getReceipts()));
-        outputStream.println("Health: " + TaxPayerUtils.getReceiptsTotalAmount("Health", taxpayer.getReceipts()));
-        outputStream.println("Other: " + TaxPayerUtils.getReceiptsTotalAmount("Other", taxpayer.getReceipts()));
-
-        outputStream.close();
-
-        JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void updateTxtTaxpayerLogFile(String filePath, int taxpayerIndex) {
+    private void updateTxtTaxpayerFile(String filePath, int taxpayerIndex) {
         PrintWriter outputStream = null;
         try {
             outputStream = new PrintWriter(new FileOutputStream(filePath));
@@ -268,48 +391,7 @@ public class FilesManager {
         outputStream.close();
     }
 
-    public void updateXmlTaxpayerLogFile(String folderSavePath, int taxpayerIndex) {
-        TaxPayer taxpayer = cachedTaxPayers.get(taxpayerIndex);
-
-        PrintWriter outputStream = null;
-        try {
-            outputStream = new PrintWriter(new FileOutputStream(folderSavePath + "//" + taxpayer.getVat() + XML_LOG_FILE_SUFFIX));
-        } catch (FileNotFoundException e) {
-            logger.warning(PROBLEM_OPENING_STRING + folderSavePath + "//" + taxpayer.getVat() + XML_LOG_FILE_SUFFIX);
-        }
-
-        if (outputStream == null) {
-            logger.warning("Something went wrong while updating xml file. Empty output stream");
-            return;
-        }
-
-        outputStream.println("<Name> " + taxpayer.getName() + " </Name>");
-        outputStream.println("<AFM> " + taxpayer.getVat() + " </AFM>");
-        outputStream.println("<Income> " + taxpayer.getIncome() + " </Income>");
-        outputStream.println("<BasicTax> " + taxpayer.getBasicTax() + " </BasicTax>");
-        if (taxpayer.getTaxIncrease() != 0) {
-            outputStream.println("<TaxIncrease> " + taxpayer.getTaxIncrease() + " </TaxIncrease>");
-        } else {
-            outputStream.println("<TaxDecrease> " + taxpayer.getTaxDecrease() + " </TaxDecrease>");
-        }
-        outputStream.println("<TotalTax> " + taxpayer.getTotalTax() + " </TotalTax>");
-        outputStream.println("<Receipts> " + TaxPayerUtils.getReceiptsTotalAmount(taxpayer.getReceipts()) + " </Receipts>");
-        outputStream.println("<Entertainment> " + TaxPayerUtils.getReceiptsTotalAmount("Entertainment", taxpayer.getReceipts()) + " </Entertainment>");
-        outputStream.println("<Basic> " + TaxPayerUtils.getReceiptsTotalAmount("Basic", taxpayer.getReceipts()) + " </Basic>");
-        outputStream.println("<Travel> " + TaxPayerUtils.getReceiptsTotalAmount("Travel", taxpayer.getReceipts()) + " </Travel>");
-        outputStream.println("<Health> " + TaxPayerUtils.getReceiptsTotalAmount("Health", taxpayer.getReceipts()) + " </Health>");
-        outputStream.println("<Other> " + TaxPayerUtils.getReceiptsTotalAmount("Other", taxpayer.getReceipts()) + " </Other>");
-
-        outputStream.close();
-
-        JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
-    }
-
     public void setTaxPayersFilePath(String taxPayersFilePath) {
         this.taxPayersFilePath = taxPayersFilePath;
-    }
-
-    public List<TaxPayer> getCachedTaxPayers() {
-        return cachedTaxPayers;
     }
 }

@@ -102,7 +102,7 @@ public class TaxpayerReceiptsManagementJDialog extends JDialog {
                 if (dialogResult == JOptionPane.YES_OPTION) {
                     filesManager.getCachedTaxPayers().get(taxpayerID).getReceipts().remove(taxpayerReceiptsJList.getSelectedIndex()); // todo check if i can remove - remove by index
 
-                    filesManager.updateTaxpayerInputFile(taxpayerID);
+                    filesManager.updateTaxpayerReceipts(taxpayerID);
 
                     fillTaxpayerReceiptsJList();
                 }

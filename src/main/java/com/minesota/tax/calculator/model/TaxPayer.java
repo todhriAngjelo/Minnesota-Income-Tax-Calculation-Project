@@ -103,7 +103,7 @@ public class TaxPayer {
     public String toString() {
         return "Name: " + name
                 + "\nVat number: " + vat
-                + "\nStatus: " + familyStatus
+                + "\nStatus: " + familyStatus.getDescription().toUpperCase()
                 + "\nIncome: " + String.format("%.2f", income)
                 + "\nBasicTax: " + String.format("%.2f", basicTax)
                 + "\nTaxIncrease: " + String.format("%.2f", taxIncrease)
