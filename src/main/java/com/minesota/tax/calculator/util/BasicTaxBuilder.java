@@ -4,7 +4,7 @@ import com.minesota.tax.calculator.model.TaxCategory;
 import com.minesota.tax.calculator.model.enumeration.FamilyStatusEnum;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +19,9 @@ import java.util.Map;
  * For example:
  * 4746.76 + 7.85% * (income  -71680)
  */
-public class TaxCategoryBuilder {
+public class BasicTaxBuilder {
 
-    private static final Map<FamilyStatusEnum, List<TaxCategory>> taxCategories = new HashMap<>();
+    private static final Map<FamilyStatusEnum, List<TaxCategory>> taxCategories = new EnumMap<>(FamilyStatusEnum.class); // enum map
 
     static {
         taxCategories.put(
@@ -62,7 +62,7 @@ public class TaxCategoryBuilder {
 
     }
 
-    private TaxCategoryBuilder() {
+    private BasicTaxBuilder() {
         throw new IllegalStateException("Utility class. This class can not be initialized.");
     }
 

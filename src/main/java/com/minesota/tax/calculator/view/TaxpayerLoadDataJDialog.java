@@ -1,6 +1,6 @@
 package com.minesota.tax.calculator.view;
 
-import com.minesota.tax.calculator.manager.FileManager;
+import com.minesota.tax.calculator.manager.FilesManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,21 +54,21 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 		selectAllButton.addActionListener(e -> taxpayersAfmInfoFilesJList.setSelectionInterval(0, taxpayersAfmInfoFilesJList.getModel().getSize() - 1));
 
 		loadDataFromSelectedAfmInfoFilesButton.addActionListener(e -> {
-			List<String> afmInfoFilesListToLoad = taxpayersAfmInfoFilesJList.getSelectedValuesList();
-			FileManager fileManager = FileManager.getInstance();
+			List<String> infoFiles = taxpayersAfmInfoFilesJList.getSelectedValuesList();
+			FilesManager filesManager = FilesManager.getInstance();
 
-			if (!afmInfoFilesListToLoad.isEmpty()) {
+			if (!infoFiles.isEmpty()) {
 				String confirmDialogText = "Load taxpayers data from the following files:\n";
-				for (String afmInfoFileName : afmInfoFilesListToLoad) {
+				for (String afmInfoFileName : infoFiles) {
 					confirmDialogText = confirmDialogText.concat(afmInfoFileName).concat("\n");
 				}
 				confirmDialogText += "Are you sure?";
 
 				int dialogResult = JOptionPane.showConfirmDialog(null, confirmDialogText, "Confirmation", JOptionPane.YES_NO_OPTION);
 				if (dialogResult == JOptionPane.YES_OPTION) {
-					fileManager.saveTaxPayers(taxpayersFolderPath, afmInfoFilesListToLoad);
+					filesManager.cacheTaxPayers(taxpayersFolderPath, infoFiles);
 					JLabel totalLoadedTaxpayersJLabel = (JLabel) appMainWindow.getContentPane().getComponent(1);
-					totalLoadedTaxpayersJLabel.setText(Integer.toString(fileManager.getCachedTaxPayers().size()));
+					totalLoadedTaxpayersJLabel.setText(Integer.toString(filesManager.getCachedTaxPayers().size()));
 
 					dispose();
 				}

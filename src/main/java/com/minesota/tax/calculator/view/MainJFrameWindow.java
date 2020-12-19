@@ -1,6 +1,6 @@
 package com.minesota.tax.calculator.view;
 
-import com.minesota.tax.calculator.manager.FileManager;
+import com.minesota.tax.calculator.manager.FilesManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,7 @@ import static com.minesota.tax.calculator.app.ApplicationConstants.TAHOMA;
 
 public class MainJFrameWindow {
 
-    private final FileManager fileManager = FileManager.getInstance();
+    private final FilesManager filesManager = FilesManager.getInstance();
 
     private JFrame taxationMainWindowJFrame;
 
@@ -77,7 +77,7 @@ public class MainJFrameWindow {
                 String taxPayersFilePath = afmInfoFilesFolderChooser.getSelectedFile().toString();
                 JOptionPane.showMessageDialog(null, taxPayersFilePath, "Path of input files", JOptionPane.INFORMATION_MESSAGE);
 
-                fileManager.setTaxPayersFilePath(taxPayersFilePath);
+                filesManager.setTaxPayersFilePath(taxPayersFilePath);
 
                 TaxpayerLoadDataJDialog taxpayerLoadDataJDialog = new TaxpayerLoadDataJDialog(taxationMainWindowJFrame);
                 taxpayerLoadDataJDialog.fillTaxpayersAfmInfoFilesJList(taxPayersFilePath);

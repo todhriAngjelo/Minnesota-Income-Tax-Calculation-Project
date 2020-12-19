@@ -28,16 +28,6 @@ public class TaxPayer {
         receipts = new ArrayList<>();
     }
 
-    public String toString() {
-        return "Name: " + name
-                + "\nVat number: " + vat
-                + "\nStatus: " + familyStatus
-                + "\nIncome: " + String.format("%.2f", income)
-                + "\nBasicTax: " + String.format("%.2f", basicTax)
-                + "\nTaxIncrease: " + String.format("%.2f", taxIncrease)
-                + "\nTaxDecrease: " + String.format("%.2f", taxDecrease);
-    }
-
     public String getName() {
         return name;
     }
@@ -108,5 +98,15 @@ public class TaxPayer {
 
     public void setTotalTax(double totalTax) {
         this.totalTax = totalTax;
+    }
+
+    public String toString() {
+        return "Name: " + name
+                + "\nVat number: " + vat
+                + "\nStatus: " + familyStatus
+                + "\nIncome: " + String.format("%.2f", income)
+                + "\nBasicTax: " + String.format("%.2f", basicTax)
+                + "\nTaxIncrease: " + String.format("%.2f", taxIncrease)
+                + "\nTaxDecrease: " + String.format("%.2f", taxDecrease);
     }
 }

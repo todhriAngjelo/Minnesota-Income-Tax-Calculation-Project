@@ -1,6 +1,6 @@
 package com.minesota.tax.calculator.view;
 
-import com.minesota.tax.calculator.manager.FileManager;
+import com.minesota.tax.calculator.manager.FilesManager;
 import com.minesota.tax.calculator.model.Receipt;
 import com.minesota.tax.calculator.util.TaxPayerUtils;
 
@@ -170,7 +170,7 @@ public class InsertNewReceiptJDialog extends JDialog {
         getContentPane().add(kindComboBox);
 
         okButton.addActionListener(e -> {
-            FileManager fileManager = FileManager.getInstance();
+            FilesManager filesManager = FilesManager.getInstance();
             if (!kindComboBox.getSelectedItem().toString().equals("Select Kind") && !receiptIdTextField.getText().equals("") && !dateTextField.getText().equals("")
                     && !amountTextField.getText().equals("") && !companyTextField.getText().equals("") && !countryTextField.getText().equals("")
                     && !cityTextField.getText().equals("") && !streetTextField.getText().equals("") && !numberTextField.getText().equals("")) {
@@ -179,10 +179,10 @@ public class InsertNewReceiptJDialog extends JDialog {
                         dateTextField.getText(), amountTextField.getText(), companyTextField.getText(),
                         countryTextField.getText(), cityTextField.getText(), streetTextField.getText(), numberTextField.getText());
 
-                fileManager.getCachedTaxPayers().get(taxpayerID).getReceipts().add(newReceipt);
-                TaxPayerUtils.applyTaxPayerTaxAdjustments(fileManager.getCachedTaxPayers().get(taxpayerID));
+                filesManager.getCachedTaxPayers().get(taxpayerID).getReceipts().add(newReceipt);
+                TaxPayerUtils.applyTaxPayerTaxAdjustments(filesManager.getCachedTaxPayers().get(taxpayerID));
 
-                fileManager.updateTaxpayerInputFile(taxpayerID);
+                filesManager.updateTaxpayerInputFile(taxpayerID);
 
                 dispose();
             } else {

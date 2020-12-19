@@ -17,4 +17,6 @@ public class ApplicationConstants {
             {"<City> ", " </City>"}, {"<Street> ", " </Street>"}, {"<Number> ", " </Number>"}                           //Receipt info
     };
 
+    public static final String TXT_LOG_FILE_SUFFIX = "_LOG.txt";
+    public static final String XML_LOG_FILE_SUFFIX = "_LOG.xml";
 }

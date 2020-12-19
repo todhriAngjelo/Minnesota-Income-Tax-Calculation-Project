@@ -1,7 +1,5 @@
 package com.minesota.tax.calculator.model;
 
-import java.math.BigDecimal;
-
 public class Receipt {
     private String kind;
     private String id;
@@ -30,11 +28,31 @@ public class Receipt {
     }
 
     public double getAmount() {
-        return (new BigDecimal(amount).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+        return amount;
     }
 
     public Company getCompany() {
         return company;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String toString() {

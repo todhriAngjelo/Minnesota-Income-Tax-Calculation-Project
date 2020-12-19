@@ -14,7 +14,7 @@ public class TaxPayerUtils {
     /**
      * Sums total amount on the list of receipts with a specific receipt kind
      *
-     * @param receiptKind the receipt kind ( e.g. entartainment )
+     * @param receiptKind the receipt kind ( e.g. entertainment )
      * @param receipts    the list of receipts
      * @return the total receipts amount
      */
