@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import static com.minesota.tax.calculator.app.ApplicationConstants.*;
 import static com.minesota.tax.calculator.util.BasicTaxBuilder.getBasicTaxBy;
 
-
 /**
  * Class responsible for the files management and parsing business logic. Also holds the list of taxPayers that are
  * loaded and cached in the application
@@ -50,7 +49,7 @@ public class FilesManager {
      * Example:
      * Apostolos Zarras | 130456093
      */
-    public static String[] getFormattedTaxPayersStrings() {
+    public String[] getFormattedTaxPayersStrings() {
         FilesManager filesManager = FilesManager.getInstance();
         String[] taxpayersNameAfmValuesPairList = new String[filesManager.getCachedTaxPayers().size()];
 
@@ -62,7 +61,7 @@ public class FilesManager {
         return taxpayersNameAfmValuesPairList;
     }
 
-    public static Scanner getScanner(String folderPath, String filename) {
+    public Scanner getScanner(String folderPath, String filename) {
         try {
             return new Scanner(new FileInputStream(folderPath + "\\" + filename));
         } catch (FileNotFoundException e) {

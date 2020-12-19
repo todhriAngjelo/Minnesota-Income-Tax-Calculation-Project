@@ -209,7 +209,7 @@ public class LoadedTaxpayersJDialog extends JDialog {
     }
 
     public void fillLoadedTaxpayersJList() {
-        String[] jlistValues = FilesManager.getFormattedTaxPayersStrings();
+        String[] jlistValues = FilesManager.getInstance().getFormattedTaxPayersStrings();
 
         loadedTaxpayersJList.setModel(new AbstractListModel() {
             final String[] values = jlistValues;

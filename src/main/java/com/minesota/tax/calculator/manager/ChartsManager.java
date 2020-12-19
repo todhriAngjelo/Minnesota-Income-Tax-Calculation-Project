@@ -19,6 +19,7 @@ public class ChartsManager {
 
     private static ChartsManager chartsManagerInstance = null;
     private final FilesManager filesManager = FilesManager.getInstance();
+    private PiePlot piePlot;
 
     public static ChartsManager getInstance() {
         if (chartsManagerInstance == null) {
@@ -39,11 +40,11 @@ public class ChartsManager {
         receiptPieChartDataset.setValue("Other", TaxPayerUtils.getReceiptsTotalAmount("Other", taxpayer.getReceipts()));
 
         JFreeChart receiptPieJFreeChart = ChartFactory.createPieChart("Receipt Pie Chart", receiptPieChartDataset);
-        PiePlot piePlot = (PiePlot) receiptPieJFreeChart.getPlot();
+        piePlot = (PiePlot) receiptPieJFreeChart.getPlot();
         PieSectionLabelGenerator generator = new StandardPieSectionLabelGenerator("{0}: {1}$ ({2})", new DecimalFormat("0.00"), new DecimalFormat("0.00%"));
         piePlot.setLabelGenerator(generator);
 
-        ChartFrame receiptPieChartFrame = new ChartFrame(FilesManager.getFormattedTaxPayersStrings()[taxpayerIndex], receiptPieJFreeChart);
+        ChartFrame receiptPieChartFrame = new ChartFrame(FilesManager.getInstance().getFormattedTaxPayersStrings()[taxpayerIndex], receiptPieJFreeChart);
         receiptPieChartFrame.pack();
         receiptPieChartFrame.setResizable(false);
         receiptPieChartFrame.setLocationRelativeTo(null);
@@ -65,11 +66,15 @@ public class ChartsManager {
 
         JFreeChart taxAnalysisJFreeChart = ChartFactory.createBarChart("Tax Analysis Bar Chart", "", "Tax Analysis in $", taxAnalysisBarChartDataset, PlotOrientation.VERTICAL, true, true, false);
 
-        ChartFrame receiptPieChartFrame = new ChartFrame(FilesManager.getFormattedTaxPayersStrings()[taxpayerIndex], taxAnalysisJFreeChart);
+        ChartFrame receiptPieChartFrame = new ChartFrame(FilesManager.getInstance().getFormattedTaxPayersStrings()[taxpayerIndex], taxAnalysisJFreeChart);
         receiptPieChartFrame.pack();
         receiptPieChartFrame.setResizable(false);
         receiptPieChartFrame.setLocationRelativeTo(null);
         receiptPieChartFrame.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
         receiptPieChartFrame.setVisible(true);
+    }
+
+    public PiePlot getPiePlot() { // for testing
+        return piePlot;
     }
 }
