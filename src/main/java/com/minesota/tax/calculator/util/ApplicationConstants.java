@@ -1,4 +1,4 @@
-package com.minesota.tax.calculator.app;
+package com.minesota.tax.calculator.util;
 
 public class ApplicationConstants {
 
@@ -19,4 +19,6 @@ public class ApplicationConstants {
 
     public static final String TXT_LOG_FILE_SUFFIX = "_LOG.txt";
     public static final String XML_LOG_FILE_SUFFIX = "_LOG.xml";
+    public static final String PROBLEM_OPENING_STRING = "Problem opening: ";
+
 }

@@ -7,7 +7,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.List;
 
-import static com.minesota.tax.calculator.app.ApplicationConstants.TAHOMA;
+import static com.minesota.tax.calculator.util.ApplicationConstants.TAHOMA;
 
 public class TaxpayerLoadDataJDialog extends JDialog {
 
@@ -78,6 +78,7 @@ public class TaxpayerLoadDataJDialog extends JDialog {
 		});
 	}
 
+	// todo refactor this to the FilesManager class. We don't want dependency with IO here
 	public void fillTaxpayersAfmInfoFilesJList(String afmInfoFilesFolderPath) {
 		this.taxpayersFolderPath = afmInfoFilesFolderPath;
 

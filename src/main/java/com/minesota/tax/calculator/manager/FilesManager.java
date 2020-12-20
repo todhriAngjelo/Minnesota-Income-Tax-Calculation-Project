@@ -1,9 +1,9 @@
 package com.minesota.tax.calculator.manager;
 
-import com.minesota.tax.calculator.app.ApplicationConstants;
 import com.minesota.tax.calculator.model.Receipt;
 import com.minesota.tax.calculator.model.TaxPayer;
 import com.minesota.tax.calculator.model.enumeration.FamilyStatusEnum;
+import com.minesota.tax.calculator.util.ApplicationConstants;
 import com.minesota.tax.calculator.util.TaxPayerUtils;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import static com.minesota.tax.calculator.app.ApplicationConstants.*;
+import static com.minesota.tax.calculator.util.ApplicationConstants.*;
 import static com.minesota.tax.calculator.util.BasicTaxBuilder.getBasicTaxBy;
 
 /**
@@ -22,7 +22,6 @@ import static com.minesota.tax.calculator.util.BasicTaxBuilder.getBasicTaxBy;
  */
 public class FilesManager {
 
-    private static final String PROBLEM_OPENING_STRING = "Problem opening: ";
     static Logger logger = Logger.getLogger(FilesManager.class.getName());
 
     private static FilesManager filesManagerInstance = null;
@@ -129,6 +128,8 @@ public class FilesManager {
 
         outputStream.close();
 
+        // todo remove this dependency with the UI
+        // todo make this method return an integer for succcess or failure and UI handle the dialogs display
         JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -175,6 +176,8 @@ public class FilesManager {
 
         outputStream.close();
 
+        // todo remove this dependency with the UI
+        // todo make this method return an integer for succcess or failure and UI handle the dialogs display
         JOptionPane.showMessageDialog(null, "File saved", "Message", JOptionPane.INFORMATION_MESSAGE);
     }
 

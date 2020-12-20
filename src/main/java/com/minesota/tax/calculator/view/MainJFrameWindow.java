@@ -5,7 +5,7 @@ import com.minesota.tax.calculator.manager.FilesManager;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.minesota.tax.calculator.app.ApplicationConstants.TAHOMA;
+import static com.minesota.tax.calculator.util.ApplicationConstants.TAHOMA;
 
 public class MainJFrameWindow {
 

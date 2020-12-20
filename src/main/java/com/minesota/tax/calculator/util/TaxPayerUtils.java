@@ -5,6 +5,10 @@ import com.minesota.tax.calculator.model.TaxPayer;
 
 import java.util.List;
 
+/**
+ * This class holds the logic for some basic taxpayer functions, such as total receipts amounts
+ * calculations, taxPayer tax adjustment based on his receipts total etc.
+ */
 public class TaxPayerUtils {
 
     private TaxPayerUtils() {

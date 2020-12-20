@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class holds the logic for the taxpayer's tax categories based on his family status.
+ * This class holds the logic for the taxpayer's tax calculations based on his family status and income.
  * Each tax payer pays a basic tax based on this income category ( upper and lower limits ) and then an
  * addional tax that is a percentage of his total income.
  * <p>
