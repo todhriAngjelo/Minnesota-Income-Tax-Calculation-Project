@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="project-material/Minnesota Income Tax Calculation Project"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="test/src"/>
+	<classpathentry kind="lib" path="out/test/test/junit/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/jfreechart-1.0.19-experimental.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/jfreechart-1.0.19-swt.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/jfreesvg-2.0.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/orsoncharts-1.4-eval-nofx.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/orsonpdf-1.6-eval.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/servlet.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/JFreeChartLibrary(jar)/swtgraphics2d.jar"/>
+	<classpathentry kind="lib" path="test/junit/junit-4.12.jar"/>
+	<classpathentry kind="output" path="out/production/main"/>
+</classpath>
